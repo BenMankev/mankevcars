@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b5d73">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MankevCars">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>MankevCars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f3;--card:#fff;--text:#1b2227;--muted:#5a666e;--line:#d9dfdd;--red:#c0292b;--yel:#8f5f00;--grn:#1d7a42;--accent:#0b5d73;--hero:#dce7e6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171a;--card:#192226;--text:#e9eef0;--muted:#9aa8af;--line:#2a373c;--red:#ff7b7d;--yel:#f0c25a;--grn:#55c985;--accent:#5cc0da;--hero:#223037;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10171a;--card:#192226;--text:#e9eef0;--muted:#9aa8af;--line:#2a373c;--red:#ff7b7d;--yel:#f0c25a;--grn:#55c985;--accent:#5cc0da;--hero:#223037;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.4 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 16px 32px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:1.6rem;margin:0;letter-spacing:-.01em}
+.acts{display:flex;gap:8px}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);color:var(--bg);border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+.ghost{background:none;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:14px -16px 16px;padding:0 16px 4px;scrollbar-width:thin}
+.tab{flex:0 0 auto;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:8px 16px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
+.sum{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 14px;color:var(--muted)}
+.sum b{color:var(--text)}
+.hero{height:180px;border-radius:14px;overflow:hidden;background:var(--hero);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero svg{width:78%;max-height:150px}
+.carhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h2{font-size:1.3rem;margin:0}
+.item{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:var(--card);color:var(--text);border:1px solid var(--line);border-left:7px solid var(--c);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.red{--c:var(--red)}.yellow{--c:var(--yel)}.green{--c:var(--grn)}
+.item b{display:block;font-size:1.05rem}
+.item small{color:var(--muted);font-size:.9rem}
+.pill{font-style:normal;font-weight:700;font-size:.8rem;color:var(--c);border:1.5px solid var(--c);border-radius:99px;padding:0 8px;margin-left:8px;white-space:nowrap}
+.badge{text-align:right;font-weight:700;color:var(--c);white-space:nowrap}
+.badge small{display:block;font-weight:400;color:var(--muted)}
+.note,.empty{color:var(--muted);font-size:.9rem;margin-top:18px}
+dialog{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:14px;width:min(92vw,420px);padding:18px}
+dialog h2{margin:0 0 4px}
+label{display:block;margin-top:12px;font-size:.9rem;color:var(--muted)}
+input{width:100%;padding:10px;margin-top:4px;font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px}
+.row{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+.del{margin-right:auto;color:var(--red)}
+.primary:disabled{opacity:.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>MankevCars</h1><div class="acts"><button class="ghost" id="lang">EN</button><button class="ghost" id="theme"></button><button class="primary" id="add" data-i="add"></button></div></div>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+  <div id="view"></div>
+  <p class="note" id="msg"></p>
+  <input type="file" id="pf" accept="image/*" hidden>
+</main>
+
+<dialog id="dlg">
+  <form id="f">
+    <h2 id="ttl"></h2>
+    <label><span data-i="lName"></span><input name="name" required placeholder="2020 Dodge Grand Caravan"></label>
+    <label><span data-i="lInsp"></span><input name="insp" type="date"></label>
+    <label><span data-i="lIns"></span><input name="ins" type="date"></label>
+    <label><span data-i="lOil"></span><input name="oilKm" type="number" inputmode="numeric" min="0"></label>
+    <label><span data-i="lKm"></span><input name="km" type="number" inputmode="numeric" min="0"></label>
+    <label><span data-i="lInt"></span><input name="int" type="number" inputmode="numeric" min="1000" value="15000"></label>
+    <div class="row">
+      <button type="button" class="ghost del" id="del"></button>
+      <button type="button" class="ghost" id="cancel" data-i="cancel"></button>
+      <button type="submit" class="primary" data-i="save"></button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
+var mem = null, cur = null, armed = false, tab = "all", lang = "lt";
+var L = {
+  lt: {loc:"lt-LT", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", add:"Pridėti automobilį", all:"Visi automobiliai", cars:"Automobiliai",
+    Urgent:"Skubu", Soon:"Netrukus", OK:"Tvarkoje", insp:"Techninė apžiūra", ins:"Draudimas baigiasi", oil:"Alyvos keitimas",
+    addCur:"Įveskite dabartinę ridą", edit:"Redaguoti", addPh:"Pridėti nuotrauką", chPh:"Keisti nuotrauką",
+    note:"Duomenys saugomi tik šiame įrenginyje.", empty:"Dar nėra automobilių. Spustelėkite „Pridėti automobilį“, kad įvestumėte pirmąjį.",
+    phOk:"Nuotrauka išsaugota šiame įrenginyje.", phErr:"Nepavyko išsaugoti nuotraukos šiame įrenginyje.", limit:"Pasiektas limitas: iki 10 automobilių.",
+    tAdd:"Pridėti automobilį", tEdit:"Redaguoti automobilį", lName:"Automobilio pavadinimas", lInsp:"Techninė apžiūra iki", lIns:"Draudimas galioja iki",
+    lOil:"Rida paskutinio alyvos keitimo metu (km)", lKm:"Dabartinė rida (km)", lInt:"Alyvos keitimo intervalas (km)",
+    del:"Ištrinti", del2:"Spustelėkite dar kartą", cancel:"Atšaukti", save:"Išsaugoti",
+    days:function(d){ return d < 0 ? "Pavėluota " + (-d) + " d." : d === 0 ? "Šiandien" : "Po " + d + " d."; },
+    over:function(n){ return "Viršyta " + n + " km"; }, left:function(n){ return "Liko " + n + " km"; },
+    dueAt:function(n){ return "Keisti ties " + n + " km"; }, lastAt:function(n){ return "Paskutinį kartą ties " + n + " km"; }},
+  en: {loc:"en-GB", sw:"LT", dark:"Dark mode", light:"Light mode", add:"Add car", all:"All cars", cars:"Cars",
+    Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
+    addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
+    note:"Saved on this device only.", empty:"No cars yet. Tap Add car to enter the first one.",
+    phOk:"Photo saved on this device.", phErr:"The photo could not be saved on this device.", limit:"Limit reached: up to 10 cars.",
+    tAdd:"Add car", tEdit:"Edit car", lName:"Car name", lInsp:"Technical inspection due", lIns:"Insurance expires",
+    lOil:"Odometer at last oil change (km)", lKm:"Current odometer (km)", lInt:"Oil change interval (km)",
+    del:"Delete car", del2:"Tap again to delete", cancel:"Cancel", save:"Save car",
+    days:function(d){ return d < 0 ? (-d) + (d === -1 ? " day overdue" : " days overdue") : d === 0 ? "Due today" : "In " + d + (d === 1 ? " day" : " days"); },
+    over:function(n){ return n + " km overdue"; }, left:function(n){ return n + " km left"; },
+    dueAt:function(n){ return "Due at " + n + " km"; }, lastAt:function(n){ return "Last at " + n + " km"; }}
+};
+function T(){ return L[lang]; }
+function load(){
+  try { var s = localStorage.getItem(KEY); if (s) return JSON.parse(s); } catch (e) {}
+  return mem || [];
+}
+var cars = load();
+function save(){
+  mem = cars;
+  try { localStorage.setItem(KEY, JSON.stringify(cars)); return true; } catch (e) { return false; }
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function nf(n){ return n.toLocaleString(T().loc); }
+function fmt(d){ var p = d.split("-").map(Number); return new Date(p[0], p[1]-1, p[2]).toLocaleDateString(T().loc, {day:"numeric", month:"short", year:"numeric"}); }
+function short(n){ return n.replace(/^\d{4}\s+/, ""); }
+function getCar(id){ return cars.filter(function(x){ return x.id === id; })[0]; }
+var WORD = {red:"Urgent", yellow:"Soon", green:"OK"}, RANK = {red:0, yellow:1, green:2};
+
+function items(){
+  var out = [], t = new Date(), s = T(); t.setHours(0,0,0,0);
+  cars.forEach(function(c){
+    [[s.insp, c.insp], [s.ins, c.ins]].forEach(function(x){
+      if (!x[1]) return;
+      var p = x[1].split("-").map(Number), days = Math.round((new Date(p[0], p[1]-1, p[2]) - t) / 864e5);
+      out.push({c:c, label:x[0], st:days <= 7 ? "red" : days <= 30 ? "yellow" : "green", key:days, txt:s.days(days), sub:fmt(x[1])});
+    });
+    if (c.oilKm != null && c.oilKm !== "") {
+      if (c.km) {
+        var due = c.oilKm + (c.int || 15000), left = due - c.km;
+        out.push({c:c, label:s.oil, st:left <= 0 ? "red" : left <= 1500 ? "yellow" : "green", key:left/40, txt:left <= 0 ? s.over(nf(-left)) : s.left(nf(left)), sub:s.dueAt(nf(due))});
+      } else {
+        out.push({c:c, label:s.oil, st:"yellow", key:9999, txt:s.addCur, sub:s.lastAt(nf(c.oilKm))});
+      }
+    }
+  });
+  return out.sort(function(a,b){ return RANK[a.st] - RANK[b.st] || a.key - b.key; });
+}
+
+function row(i, withName){
+  var left = withName ? '<b>' + esc(i.c.name) + '</b><small>' + i.label + '</small>' : '<b>' + i.label + '</b>';
+  var tag = withName ? 'button' : 'div';
+  return '<' + tag + ' class="item ' + i.st + '" data-id="' + i.c.id + '"><span>' + left + '<i class="pill">' + T()[WORD[i.st]] + '</i></span><span class="badge">' + i.txt + '<small>' + i.sub + '</small></span></' + tag + '>';
+}
+
+function svg(){
+  return '<svg viewBox="0 0 240 110" role="img" aria-label="Car"><path d="M12 78V62q0-8 10-10l40-8 26-24q5-4 12-4h56q8 0 13 5l22 23 38 9q10 3 10 12v13z" fill="currentColor"/><path d="M96 24h46q4 0 7 3l19 17H78z" fill="var(--hero)"/><circle cx="66" cy="80" r="17" fill="var(--text)"/><circle cx="66" cy="80" r="7" fill="var(--hero)"/><circle cx="178" cy="80" r="17" fill="var(--text)"/><circle cx="178" cy="80" r="7" fill="var(--hero)"/></svg>';
+}
+
+var dlg = document.getElementById("dlg"), f = document.getElementById("f"), delBtn = document.getElementById("del"), pf = document.getElementById("pf"), msg = document.getElementById("msg");
+var addBtn = document.getElementById("add"), themeBtn = document.getElementById("theme"), langBtn = document.getElementById("lang"), root = document.documentElement;
+
+function render(){
+  var s = T();
+  if (tab !== "all" && !getCar(tab)) tab = "all";
+  document.getElementById("tabs").innerHTML = '<button class="tab" role="tab" data-tab="all" aria-selected="' + (tab === "all") + '">' + s.all + '</button>' +
+    cars.map(function(c){ return '<button class="tab" role="tab" data-tab="' + c.id + '" aria-selected="' + (tab === c.id) + '">' + esc(short(c.name)) + '</button>'; }).join("");
+  addBtn.disabled = cars.length >= MAX;
+  if (cars.length >= MAX) msg.textContent = s.limit;
+  var it = items(), v = document.getElementById("view");
+  if (!cars.length) { v.innerHTML = '<p class="empty">' + s.empty + '</p>'; return; }
+  if (tab === "all") {
+    var n = {red:0, yellow:0, green:0}; it.forEach(function(i){ n[i.st]++; });
+    v.innerHTML = '<div class="sum"><span><b>' + n.red + '</b> ' + s.Urgent.toLowerCase() + '</span><span><b>' + n.yellow + '</b> ' + s.Soon.toLowerCase() + '</span><span><b>' + n.green + '</b> ' + s.OK.toLowerCase() + '</span></div>' + it.map(function(i){ return row(i, true); }).join("");
+  } else {
+    var c = getCar(tab);
+    v.innerHTML = '<div class="hero">' + (c.photo ? '<img alt="" src="' + c.photo + '">' : svg()) + '</div>' +
+      '<div class="carhead"><h2>' + esc(c.name) + '</h2><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
+      it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("");
+  }
+}
+
+function applyLang(){
+  var s = T();
+  root.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(function(e){ e.textContent = s[e.dataset.i]; });
+  themeBtn.textContent = root.dataset.theme === "dark" ? s.light : s.dark;
+  langBtn.textContent = s.sw;
+  document.getElementById("tabs").setAttribute("aria-label", s.cars);
+  msg.textContent = s.note;
+  render();
+}
+
+function edit(id){
+  if (!id && cars.length >= MAX) return;
+  var c = getCar(id) || {}, s = T();
+  cur = c.id || null; armed = false; delBtn.textContent = s.del; delBtn.style.display = cur ? "" : "none";
+  document.getElementById("ttl").textContent = cur ? s.tEdit : s.tAdd;
+  f.name.value = c.name || ""; f.insp.value = c.insp || ""; f.ins.value = c.ins || "";
+  f.oilKm.value = c.oilKm != null ? c.oilKm : ""; f.km.value = c.km != null ? c.km : ""; f.int.value = c.int || 15000;
+  dlg.showModal();
+}
+addBtn.onclick = function(){ edit(null); };
+document.getElementById("cancel").onclick = function(){ dlg.close(); };
+document.getElementById("tabs").onclick = function(e){ var b = e.target.closest(".tab"); if (b) { tab = b.dataset.tab === "all" ? "all" : Number(b.dataset.tab); render(); } };
+document.getElementById("view").onclick = function(e){
+  var a = e.target.closest("[data-act]");
+  if (a) { if (a.dataset.act === "edit") edit(tab); else pf.click(); return; }
+  var b = e.target.closest("button.item"); if (b) { tab = Number(b.dataset.id); render(); window.scrollTo(0, 0); }
+};
+pf.onchange = function(){
+  var file = pf.files[0]; if (!file) return;
+  var r = new FileReader();
+  r.onload = function(){
+    var im = new Image();
+    im.onload = function(){
+      var k = Math.min(1, 900 / im.width), cv = document.createElement("canvas");
+      cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+      cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+      var c = getCar(tab); c.photo = cv.toDataURL("image/jpeg", 0.78);
+      msg.textContent = save() ? T().phOk : T().phErr;
+      render();
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(file); pf.value = "";
+};
+delBtn.onclick = function(){
+  if (!armed) { armed = true; delBtn.textContent = T().del2; return; }
+  cars = cars.filter(function(x){ return x.id !== cur; }); save(); msg.textContent = T().note; render(); dlg.close();
+};
+f.onsubmit = function(e){
+  e.preventDefault();
+  var num = function(v){ return v === "" ? null : Number(v); }, old = getCar(cur) || {};
+  var rec = {id: cur || Date.now(), name: f.name.value.trim(), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo};
+  if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; }
+  save(); render(); dlg.close();
+};
+
+function setTheme(t){ root.dataset.theme = t; themeBtn.textContent = t === "dark" ? T().light : T().dark; try { localStorage.setItem(TKEY, t); } catch (e) {} }
+themeBtn.onclick = function(){ setTheme(root.dataset.theme === "dark" ? "light" : "dark"); };
+langBtn.onclick = function(){ lang = lang === "lt" ? "en" : "lt"; try { localStorage.setItem(GKEY, lang); } catch (e) {} applyLang(); };
+try { lang = localStorage.getItem(GKEY) || "lt"; } catch (e) {}
+var savedTheme = null; try { savedTheme = localStorage.getItem(TKEY); } catch (e) {}
+setTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+applyLang();
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(function(){}); }
+</script>
+</body>
+</html>
