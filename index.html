@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,52 +13,84 @@
 <title>MankevCars</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f2f4f3;--card:#fff;--text:#1b2227;--muted:#5a666e;--line:#d9dfdd;--red:#c0292b;--yel:#8f5f00;--grn:#1d7a42;--accent:#0b5d73;--hero:#dce7e6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171a;--card:#192226;--text:#e9eef0;--muted:#9aa8af;--line:#2a373c;--red:#ff7b7d;--yel:#f0c25a;--grn:#55c985;--accent:#5cc0da;--hero:#223037;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10171a;--card:#192226;--text:#e9eef0;--muted:#9aa8af;--line:#2a373c;--red:#ff7b7d;--yel:#f0c25a;--grn:#55c985;--accent:#5cc0da;--hero:#223037;color-scheme:dark}
+:root{--bg:#eef3f4;--card:#fff;--text:#0f1e24;--muted:#5b6d75;--line:#dce6e8;--red:#b3262a;--yel:#8a5a00;--grn:#17743c;--accent:#0b5d73;--ink:#fff;--hero:linear-gradient(135deg,#cfe6ec,#eaf5f7);--shadow:0 1px 2px rgba(15,30,36,.06),0 10px 28px rgba(15,30,36,.07);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1316;--card:#131d21;--text:#e8f0f2;--muted:#8fa3ab;--line:#22323a;--red:#ff8587;--yel:#f5c860;--grn:#5fd38d;--accent:#4cc3de;--ink:#04222b;--hero:linear-gradient(135deg,#17323b,#10242b);--shadow:0 1px 0 rgba(255,255,255,.04);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1316;--card:#131d21;--text:#e8f0f2;--muted:#8fa3ab;--line:#22323a;--red:#ff8587;--yel:#f5c860;--grn:#5fd38d;--accent:#4cc3de;--ink:#04222b;--hero:linear-gradient(135deg,#17323b,#10242b);--shadow:0 1px 0 rgba(255,255,255,.04);color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:17px/1.4 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:640px;margin:0 auto;padding:18px 16px 32px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-h1{font-size:1.6rem;margin:0;letter-spacing:-.01em}
-.acts{display:flex;gap:8px}
-button{font:inherit;cursor:pointer}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:500}
+main{max-width:640px;margin:0 auto;padding:18px 16px 36px}
+button{font:inherit;font-weight:700;cursor:pointer;transition:background .15s,transform .15s}
 button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.primary{background:var(--accent);color:var(--bg);border:0;border-radius:10px;padding:10px 16px;font-weight:700}
-.ghost{background:none;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin:14px -16px 16px;padding:0 16px 4px;scrollbar-width:thin}
-.tab{flex:0 0 auto;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:8px 16px}
-.tab[aria-selected="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
-.sum{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 14px;color:var(--muted)}
-.sum b{color:var(--text)}
-.hero{height:180px;border-radius:14px;overflow:hidden;background:var(--hero);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.hero img{width:100%;height:100%;object-fit:cover}
-.hero svg{width:78%;max-height:150px}
-.carhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-h2{font-size:1.3rem;margin:0}
-.item{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:var(--card);color:var(--text);border:1px solid var(--line);border-left:7px solid var(--c);border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.red{--c:var(--red)}.yellow{--c:var(--yel)}.green{--c:var(--grn)}
-.item b{display:block;font-size:1.05rem}
-.item small{color:var(--muted);font-size:.9rem}
-.pill{font-style:normal;font-weight:700;font-size:.8rem;color:var(--c);border:1.5px solid var(--c);border-radius:99px;padding:0 8px;margin-left:8px;white-space:nowrap}
-.badge{text-align:right;font-weight:700;color:var(--c);white-space:nowrap}
-.badge small{display:block;font-weight:400;color:var(--muted)}
-.note,.empty{color:var(--muted);font-size:.9rem;margin-top:18px}
-dialog{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:14px;width:min(92vw,420px);padding:18px}
-dialog h2{margin:0 0 4px}
-label{display:block;margin-top:12px;font-size:.9rem;color:var(--muted)}
-input{width:100%;padding:10px;margin-top:4px;font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px}
-.row{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
-.del{margin-right:auto;color:var(--red)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.top{display:flex;align-items:center;gap:8px}
+h1{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;margin:0 auto 0 0}
+h1 span{color:var(--accent)}
+.ghost{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:9px 14px}
+.icon{width:42px;height:42px;padding:0;display:grid;place-items:center}
+.icon svg,.ico svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon svg{width:21px;height:21px}
+.primary{background:var(--accent);color:var(--ink);border:0;border-radius:12px;padding:11px 16px;font-weight:800}
 .primary:disabled{opacity:.5;cursor:not-allowed}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:18px -16px 16px;padding:0 16px 4px;scrollbar-width:none}
+.tab{flex:0 0 auto;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:9px 17px}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.red{--c:var(--red);--t:color-mix(in srgb,var(--red) 13%,var(--card))}
+.yellow{--c:var(--yel);--t:color-mix(in srgb,var(--yel) 15%,var(--card))}
+.green{--c:var(--grn);--t:color-mix(in srgb,var(--grn) 13%,var(--card))}
+.all{--c:var(--accent);--t:color-mix(in srgb,var(--accent) 13%,var(--card))}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:16px;padding:9px 4px;text-align:center;line-height:1.15}
+.chip b{display:block;font-size:1.35rem;font-weight:800}
+.chip small{color:var(--muted);font-size:.78rem;font-weight:700}
+.chip.on{background:var(--t);border-color:var(--c)}
+.chip.on b,.chip.on small{color:var(--c)}
+.card{display:block;width:100%;text-align:left;background:var(--card);color:var(--text);font:inherit;font-weight:500;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+button.card:active{transform:scale(.99)}
+.ci{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.ico{width:42px;height:42px;border-radius:13px;background:var(--t);color:var(--c);display:grid;place-items:center}
+.ico svg{width:22px;height:22px}
+.tt{display:grid;min-width:0}
+.nm{font-weight:800;font-size:1.02rem;line-height:1.2}
+.lb{color:var(--muted);font-size:.86rem}
+.pill{background:var(--t);color:var(--c);font-weight:800;font-size:.78rem;border-radius:99px;padding:4px 11px;white-space:nowrap}
+.cf{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.tx{font-weight:800;font-size:1.06rem;color:var(--c)}
+.dt{color:var(--muted);font-size:.86rem;text-align:right}
+.hero{height:190px;border-radius:24px;overflow:hidden;background:var(--hero);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero svg{width:76%;max-height:150px}
+.carhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.id{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h2{font-size:1.35rem;font-weight:800;letter-spacing:-.01em;margin:0}
+.acts{display:flex;gap:8px}
+.plate{display:inline-flex;border:2px solid #15191c;border-radius:7px;overflow:hidden;background:#fff;color:#111;font-weight:800;letter-spacing:.07em;font-size:.95rem}
+.plate i{background:#0b3fa8;color:#fff;font-style:normal;font-size:.6rem;letter-spacing:.02em;padding:3px 5px;display:flex;align-items:flex-end}
+.plate span{padding:2px 10px}
+.dc h3{margin:0 0 2px;font-size:.95rem;font-weight:800}
+.dr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.dc h3+.dr{border-top:0}
+.dk{color:var(--muted);font-size:.82rem}
+.dv{font-weight:800;letter-spacing:.03em;word-break:break-all}
+.cp{padding:7px 12px;font-size:.85rem;white-space:nowrap}
+.note{color:var(--muted);font-size:.86rem;margin-top:18px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.empty div{color:var(--accent);opacity:.55;margin:0 auto 10px;max-width:220px}
+dialog{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:24px;width:min(94vw,440px);max-height:90vh;overflow:auto;padding:20px}
+dialog::backdrop{background:rgba(5,15,20,.55);backdrop-filter:blur(3px)}
+dialog h2{margin-bottom:2px}
+label{display:block;margin-top:13px;font-size:.86rem;font-weight:700;color:var(--muted)}
+input{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px}
+.caps{text-transform:uppercase}
+.row{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
+.del{margin-right:auto;color:var(--red)}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><h1>MankevCars</h1><div class="acts"><button class="ghost" id="lang">EN</button><button class="ghost" id="theme"></button><button class="primary" id="add" data-i="add"></button></div></div>
+  <div class="top"><h1>Mankev<span>Cars</span></h1><button class="ghost icon" id="lang">EN</button><button class="ghost icon" id="theme"></button><button class="primary" id="add" data-i="addS"></button></div>
   <nav class="tabs" id="tabs" role="tablist"></nav>
   <div id="view"></div>
   <p class="note" id="msg"></p>
@@ -69,6 +101,9 @@ input{width:100%;padding:10px;margin-top:4px;font:inherit;background:var(--bg);c
   <form id="f">
     <h2 id="ttl"></h2>
     <label><span data-i="lName"></span><input name="name" required placeholder="2020 Dodge Grand Caravan"></label>
+    <label><span data-i="lPlate"></span><input name="plate" class="caps" maxlength="10" placeholder="ABC123" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+    <label><span data-i="lVin"></span><input name="vin" class="caps" maxlength="17" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+    <label><span data-i="lReg"></span><input name="reg" class="caps" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
     <label><span data-i="lInsp"></span><input name="insp" type="date"></label>
     <label><span data-i="lIns"></span><input name="ins" type="date"></label>
     <label><span data-i="lOil"></span><input name="oilKm" type="number" inputmode="numeric" min="0"></label>
@@ -84,25 +119,31 @@ input{width:100%;padding:10px;margin-top:4px;font:inherit;background:var(--bg);c
 
 <script>
 var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
-var mem = null, cur = null, armed = false, tab = "all", lang = "lt";
+var mem = null, cur = null, armed = false, tab = "all", filt = "all", lang = "lt";
 var L = {
-  lt: {loc:"lt-LT", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", add:"Pridėti automobilį", all:"Visi automobiliai", cars:"Automobiliai",
+  lt: {loc:"lt-LT", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
     Urgent:"Skubu", Soon:"Netrukus", OK:"Tvarkoje", insp:"Techninė apžiūra", ins:"Draudimas baigiasi", oil:"Alyvos keitimas",
     addCur:"Įveskite dabartinę ridą", edit:"Redaguoti", addPh:"Pridėti nuotrauką", chPh:"Keisti nuotrauką",
-    note:"Duomenys saugomi tik šiame įrenginyje.", empty:"Dar nėra automobilių. Spustelėkite „Pridėti automobilį“, kad įvestumėte pirmąjį.",
+    det:"Automobilio duomenys", plate:"Valstybinis numeris", vin:"VIN kodas", reg:"Registracijos liudijimo (techpaso) Nr.",
+    copy:"Kopijuoti", copied:"Nukopijuota", copyErr:"Nepavyko",
+    note:"Duomenys saugomi tik šiame įrenginyje.", empty:"Dar nėra automobilių. Spustelėkite „+ Pridėti“, kad įvestumėte pirmąjį.",
     phOk:"Nuotrauka išsaugota šiame įrenginyje.", phErr:"Nepavyko išsaugoti nuotraukos šiame įrenginyje.", limit:"Pasiektas limitas: iki 10 automobilių.",
-    tAdd:"Pridėti automobilį", tEdit:"Redaguoti automobilį", lName:"Automobilio pavadinimas", lInsp:"Techninė apžiūra iki", lIns:"Draudimas galioja iki",
+    tAdd:"Pridėti automobilį", tEdit:"Redaguoti automobilį", lName:"Automobilio pavadinimas", lPlate:"Valstybinis numeris", lVin:"VIN kodas",
+    lReg:"Registracijos liudijimo (techpaso) numeris", lInsp:"Techninė apžiūra iki", lIns:"Draudimas galioja iki",
     lOil:"Rida paskutinio alyvos keitimo metu (km)", lKm:"Dabartinė rida (km)", lInt:"Alyvos keitimo intervalas (km)",
     del:"Ištrinti", del2:"Spustelėkite dar kartą", cancel:"Atšaukti", save:"Išsaugoti",
     days:function(d){ return d < 0 ? "Pavėluota " + (-d) + " d." : d === 0 ? "Šiandien" : "Po " + d + " d."; },
     over:function(n){ return "Viršyta " + n + " km"; }, left:function(n){ return "Liko " + n + " km"; },
     dueAt:function(n){ return "Keisti ties " + n + " km"; }, lastAt:function(n){ return "Paskutinį kartą ties " + n + " km"; }},
-  en: {loc:"en-GB", sw:"LT", dark:"Dark mode", light:"Light mode", add:"Add car", all:"All cars", cars:"Cars",
+  en: {loc:"en-GB", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
     Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
     addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
-    note:"Saved on this device only.", empty:"No cars yet. Tap Add car to enter the first one.",
+    det:"Vehicle details", plate:"Number plate", vin:"VIN code", reg:"Registration certificate no.",
+    copy:"Copy", copied:"Copied", copyErr:"Failed",
+    note:"Saved on this device only.", empty:"No cars yet. Tap + Add car to enter the first one.",
     phOk:"Photo saved on this device.", phErr:"The photo could not be saved on this device.", limit:"Limit reached: up to 10 cars.",
-    tAdd:"Add car", tEdit:"Edit car", lName:"Car name", lInsp:"Technical inspection due", lIns:"Insurance expires",
+    tAdd:"Add car", tEdit:"Edit car", lName:"Car name", lPlate:"Number plate", lVin:"VIN code",
+    lReg:"Registration certificate number (techpaso)", lInsp:"Technical inspection due", lIns:"Insurance expires",
     lOil:"Odometer at last oil change (km)", lKm:"Current odometer (km)", lInt:"Oil change interval (km)",
     del:"Delete car", del2:"Tap again to delete", cancel:"Cancel", save:"Save car",
     days:function(d){ return d < 0 ? (-d) + (d === -1 ? " day overdue" : " days overdue") : d === 0 ? "Due today" : "In " + d + (d === 1 ? " day" : " days"); },
@@ -125,35 +166,48 @@ function fmt(d){ var p = d.split("-").map(Number); return new Date(p[0], p[1]-1,
 function short(n){ return n.replace(/^\d{4}\s+/, ""); }
 function getCar(id){ return cars.filter(function(x){ return x.id === id; })[0]; }
 var WORD = {red:"Urgent", yellow:"Soon", green:"OK"}, RANK = {red:0, yellow:1, green:2};
+var IC = {
+  insp:'<path d="M9 4h6v3H9z"/><path d="M8 5.5H6.5A1.5 1.5 0 0 0 5 7v12a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V7a1.5 1.5 0 0 0-1.5-1.5H16"/><path d="m9 14 2 2 4-4"/>',
+  ins:'<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  oil:'<path d="M12 3s6 6.2 6 10.5A6 6 0 0 1 6 13.5C6 9.2 12 3 12 3z"/>'
+};
+var SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>';
 
 function items(){
   var out = [], t = new Date(), s = T(); t.setHours(0,0,0,0);
   cars.forEach(function(c){
-    [[s.insp, c.insp], [s.ins, c.ins]].forEach(function(x){
+    [["insp", c.insp], ["ins", c.ins]].forEach(function(x){
       if (!x[1]) return;
       var p = x[1].split("-").map(Number), days = Math.round((new Date(p[0], p[1]-1, p[2]) - t) / 864e5);
-      out.push({c:c, label:x[0], st:days <= 7 ? "red" : days <= 30 ? "yellow" : "green", key:days, txt:s.days(days), sub:fmt(x[1])});
+      out.push({c:c, k:x[0], label:s[x[0]], st:days <= 7 ? "red" : days <= 30 ? "yellow" : "green", key:days, txt:s.days(days), sub:fmt(x[1])});
     });
     if (c.oilKm != null && c.oilKm !== "") {
       if (c.km) {
         var due = c.oilKm + (c.int || 15000), left = due - c.km;
-        out.push({c:c, label:s.oil, st:left <= 0 ? "red" : left <= 1500 ? "yellow" : "green", key:left/40, txt:left <= 0 ? s.over(nf(-left)) : s.left(nf(left)), sub:s.dueAt(nf(due))});
+        out.push({c:c, k:"oil", label:s.oil, st:left <= 0 ? "red" : left <= 1500 ? "yellow" : "green", key:left/40, txt:left <= 0 ? s.over(nf(-left)) : s.left(nf(left)), sub:s.dueAt(nf(due))});
       } else {
-        out.push({c:c, label:s.oil, st:"yellow", key:9999, txt:s.addCur, sub:s.lastAt(nf(c.oilKm))});
+        out.push({c:c, k:"oil", label:s.oil, st:"yellow", key:9999, txt:s.addCur, sub:s.lastAt(nf(c.oilKm))});
       }
     }
   });
   return out.sort(function(a,b){ return RANK[a.st] - RANK[b.st] || a.key - b.key; });
 }
 
+function plateHtml(p){ return p ? '<span class="plate"><i>LT</i><span>' + esc(p) + '</span></span>' : ""; }
 function row(i, withName){
-  var left = withName ? '<b>' + esc(i.c.name) + '</b><small>' + i.label + '</small>' : '<b>' + i.label + '</b>';
-  var tag = withName ? 'button' : 'div';
-  return '<' + tag + ' class="item ' + i.st + '" data-id="' + i.c.id + '"><span>' + left + '<i class="pill">' + T()[WORD[i.st]] + '</i></span><span class="badge">' + i.txt + '<small>' + i.sub + '</small></span></' + tag + '>';
+  var tag = withName ? "button" : "div";
+  var txt = withName ? '<span class="nm">' + esc(i.c.name) + '</span><span class="lb">' + i.label + (i.c.plate ? " – " + esc(i.c.plate) : "") + '</span>' : '<span class="nm">' + i.label + '</span>';
+  return '<' + tag + ' class="card ' + i.st + '" data-id="' + i.c.id + '"><span class="ci"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[i.k] + '</svg></span><span class="tt">' + txt + '</span><span class="pill">' + T()[WORD[i.st]] + '</span></span><span class="cf"><span class="tx">' + i.txt + '</span><span class="dt">' + i.sub + '</span></span></' + tag + '>';
 }
-
+function details(c){
+  var s = T(), rows = [["plate", s.plate, c.plate], ["vin", s.vin, c.vin], ["reg", s.reg, c.reg]];
+  return '<div class="card dc"><h3>' + s.det + '</h3>' + rows.map(function(r){
+    return '<div class="dr"><div><div class="dk">' + r[1] + '</div><div class="dv">' + (r[2] ? esc(r[2]) : "—") + '</div></div>' + (r[2] ? '<button class="ghost cp" data-copy="' + r[0] + '">' + s.copy + '</button>' : "") + '</div>';
+  }).join("") + '</div>';
+}
 function svg(){
-  return '<svg viewBox="0 0 240 110" role="img" aria-label="Car"><path d="M12 78V62q0-8 10-10l40-8 26-24q5-4 12-4h56q8 0 13 5l22 23 38 9q10 3 10 12v13z" fill="currentColor"/><path d="M96 24h46q4 0 7 3l19 17H78z" fill="var(--hero)"/><circle cx="66" cy="80" r="17" fill="var(--text)"/><circle cx="66" cy="80" r="7" fill="var(--hero)"/><circle cx="178" cy="80" r="17" fill="var(--text)"/><circle cx="178" cy="80" r="7" fill="var(--hero)"/></svg>';
+  return '<svg viewBox="0 0 240 110" role="img" aria-label="Car"><path d="M12 78V62q0-8 10-10l40-8 26-24q5-4 12-4h56q8 0 13 5l22 23 38 9q10 3 10 12v13z" fill="currentColor"/><path d="M96 24h46q4 0 7 3l19 17H78z" fill="var(--card)"/><circle cx="66" cy="80" r="17" fill="var(--text)"/><circle cx="66" cy="80" r="7" fill="var(--card)"/><circle cx="178" cy="80" r="17" fill="var(--text)"/><circle cx="178" cy="80" r="7" fill="var(--card)"/></svg>';
 }
 
 var dlg = document.getElementById("dlg"), f = document.getElementById("f"), delBtn = document.getElementById("del"), pf = document.getElementById("pf"), msg = document.getElementById("msg");
@@ -167,24 +221,31 @@ function render(){
   addBtn.disabled = cars.length >= MAX;
   if (cars.length >= MAX) msg.textContent = s.limit;
   var it = items(), v = document.getElementById("view");
-  if (!cars.length) { v.innerHTML = '<p class="empty">' + s.empty + '</p>'; return; }
+  if (!cars.length) { v.innerHTML = '<div class="empty"><div>' + svg() + '</div>' + s.empty + '</div>'; return; }
   if (tab === "all") {
     var n = {red:0, yellow:0, green:0}; it.forEach(function(i){ n[i.st]++; });
-    v.innerHTML = '<div class="sum"><span><b>' + n.red + '</b> ' + s.Urgent.toLowerCase() + '</span><span><b>' + n.yellow + '</b> ' + s.Soon.toLowerCase() + '</span><span><b>' + n.green + '</b> ' + s.OK.toLowerCase() + '</span></div>' + it.map(function(i){ return row(i, true); }).join("");
+    var chips = [["all", it.length, s.allF], ["red", n.red, s.Urgent], ["yellow", n.yellow, s.Soon], ["green", n.green, s.OK]].map(function(x){
+      return '<button class="chip ' + x[0] + (filt === x[0] ? " on" : "") + '" data-f="' + x[0] + '"><b>' + x[1] + '</b><small>' + x[2] + '</small></button>';
+    }).join("");
+    v.innerHTML = '<div class="seg">' + chips + '</div>' + it.filter(function(i){ return filt === "all" || i.st === filt; }).map(function(i){ return row(i, true); }).join("");
   } else {
     var c = getCar(tab);
     v.innerHTML = '<div class="hero">' + (c.photo ? '<img alt="" src="' + c.photo + '">' : svg()) + '</div>' +
-      '<div class="carhead"><h2>' + esc(c.name) + '</h2><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
-      it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("");
+      '<div class="carhead"><div class="id"><h2>' + esc(c.name) + '</h2>' + plateHtml(c.plate) + '</div><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
+      it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("") + details(c);
   }
 }
 
+function themeUi(){
+  var d = root.dataset.theme === "dark";
+  themeBtn.innerHTML = d ? SUN : MOON;
+  themeBtn.setAttribute("aria-label", d ? T().light : T().dark);
+}
 function applyLang(){
   var s = T();
   root.lang = lang;
   document.querySelectorAll("[data-i]").forEach(function(e){ e.textContent = s[e.dataset.i]; });
-  themeBtn.textContent = root.dataset.theme === "dark" ? s.light : s.dark;
-  langBtn.textContent = s.sw;
+  themeUi(); langBtn.textContent = s.sw;
   document.getElementById("tabs").setAttribute("aria-label", s.cars);
   msg.textContent = s.note;
   render();
@@ -195,17 +256,26 @@ function edit(id){
   var c = getCar(id) || {}, s = T();
   cur = c.id || null; armed = false; delBtn.textContent = s.del; delBtn.style.display = cur ? "" : "none";
   document.getElementById("ttl").textContent = cur ? s.tEdit : s.tAdd;
-  f.name.value = c.name || ""; f.insp.value = c.insp || ""; f.ins.value = c.ins || "";
+  f.name.value = c.name || ""; f.plate.value = c.plate || ""; f.vin.value = c.vin || ""; f.reg.value = c.reg || "";
+  f.insp.value = c.insp || ""; f.ins.value = c.ins || "";
   f.oilKm.value = c.oilKm != null ? c.oilKm : ""; f.km.value = c.km != null ? c.km : ""; f.int.value = c.int || 15000;
   dlg.showModal();
 }
+function flash(b, k){ b.textContent = T()[k]; setTimeout(function(){ b.textContent = T().copy; }, 1300); }
 addBtn.onclick = function(){ edit(null); };
 document.getElementById("cancel").onclick = function(){ dlg.close(); };
 document.getElementById("tabs").onclick = function(e){ var b = e.target.closest(".tab"); if (b) { tab = b.dataset.tab === "all" ? "all" : Number(b.dataset.tab); render(); } };
 document.getElementById("view").onclick = function(e){
+  var ch = e.target.closest(".chip"); if (ch) { filt = ch.dataset.f; render(); return; }
+  var cp = e.target.closest("[data-copy]");
+  if (cp) {
+    var val = getCar(tab)[cp.dataset.copy];
+    if (navigator.clipboard) navigator.clipboard.writeText(val).then(function(){ flash(cp, "copied"); }, function(){ flash(cp, "copyErr"); }); else flash(cp, "copyErr");
+    return;
+  }
   var a = e.target.closest("[data-act]");
   if (a) { if (a.dataset.act === "edit") edit(tab); else pf.click(); return; }
-  var b = e.target.closest("button.item"); if (b) { tab = Number(b.dataset.id); render(); window.scrollTo(0, 0); }
+  var b = e.target.closest("button.card"); if (b) { tab = Number(b.dataset.id); render(); window.scrollTo(0, 0); }
 };
 pf.onchange = function(){
   var file = pf.files[0]; if (!file) return;
@@ -230,13 +300,13 @@ delBtn.onclick = function(){
 };
 f.onsubmit = function(e){
   e.preventDefault();
-  var num = function(v){ return v === "" ? null : Number(v); }, old = getCar(cur) || {};
-  var rec = {id: cur || Date.now(), name: f.name.value.trim(), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo};
+  var num = function(v){ return v === "" ? null : Number(v); }, up = function(el){ return el.value.trim().toUpperCase(); }, old = getCar(cur) || {};
+  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo};
   if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; }
   save(); render(); dlg.close();
 };
 
-function setTheme(t){ root.dataset.theme = t; themeBtn.textContent = t === "dark" ? T().light : T().dark; try { localStorage.setItem(TKEY, t); } catch (e) {} }
+function setTheme(t){ root.dataset.theme = t; themeUi(); try { localStorage.setItem(TKEY, t); } catch (e) {} }
 themeBtn.onclick = function(){ setTheme(root.dataset.theme === "dark" ? "light" : "dark"); };
 langBtn.onclick = function(){ lang = lang === "lt" ? "en" : "lt"; try { localStorage.setItem(GKEY, lang); } catch (e) {} applyLang(); };
 try { lang = localStorage.getItem(GKEY) || "lt"; } catch (e) {}
