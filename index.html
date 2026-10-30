@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="config.js"></script>
 <title>MankevCars</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,6 +87,11 @@ input{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;b
 .caps{text-transform:uppercase}
 .row{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
 .del{margin-right:auto;color:var(--red)}
+.bell{display:grid;gap:10px}
+.bell h3{margin:0;font-size:.95rem;font-weight:800}
+.bell p{margin:0;color:var(--muted);font-size:.9rem}
+.bell p b{color:var(--text)}
+.bell .row{margin-top:2px;justify-content:flex-start;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -121,7 +127,7 @@ input{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;b
 var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
 var mem = null, cur = null, armed = false, tab = "all", filt = "all", lang = "lt";
 var L = {
-  lt: {loc:"lt-LT", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
+  lt: {loc:"lt-LT", nTitle:"Priminimai telefone", nBody:"Gaukite pranešimą, kai artėja techninė apžiūra ar draudimo pabaiga.", nEnable:"Įjungti priminimus", nOn:"Priminimai įjungti šiame telefone. Pranešimas ateina likus 30, 14, 7, 3 ir 1 dienai, datos dieną ir kas savaitę pavėlavus. Alyvos keitimas kol kas neįtrauktas.", nTest:"Siųsti bandomąjį", nOff:"Išjungti", nIos:"Norėdami gauti pranešimus iPhone, pridėkite programą į pradžios ekraną (Bendrinti, tada Pridėti į pradžios ekraną) ir atidarykite ją iš ten.", nDenied:"Pranešimai šiai programai užblokuoti. Leiskite juos telefono nustatymuose.", nErr:"Nepavyko įjungti priminimų. Bandykite dar kartą.", nTestMsg:"Bandomasis pranešimas išsiųstas.", nOffMsg:"Priminimai išjungti.", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
     Urgent:"Skubu", Soon:"Netrukus", OK:"Tvarkoje", insp:"Techninė apžiūra", ins:"Draudimas baigiasi", oil:"Alyvos keitimas",
     addCur:"Įveskite dabartinę ridą", edit:"Redaguoti", addPh:"Pridėti nuotrauką", chPh:"Keisti nuotrauką",
     det:"Automobilio duomenys", plate:"Valstybinis numeris", vin:"VIN kodas", reg:"Registracijos liudijimo (techpaso) Nr.",
@@ -135,7 +141,7 @@ var L = {
     days:function(d){ return d < 0 ? "Pavėluota " + (-d) + " d." : d === 0 ? "Šiandien" : "Po " + d + " d."; },
     over:function(n){ return "Viršyta " + n + " km"; }, left:function(n){ return "Liko " + n + " km"; },
     dueAt:function(n){ return "Keisti ties " + n + " km"; }, lastAt:function(n){ return "Paskutinį kartą ties " + n + " km"; }},
-  en: {loc:"en-GB", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
+  en: {loc:"en-GB", nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
     Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
     addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
     det:"Vehicle details", plate:"Number plate", vin:"VIN code", reg:"Registration certificate no.",
@@ -157,7 +163,7 @@ function load(){
 }
 var cars = load();
 function save(){
-  mem = cars;
+  mem = cars; syncPush();
   try { localStorage.setItem(KEY, JSON.stringify(cars)); return true; } catch (e) { return false; }
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
@@ -210,6 +216,53 @@ function svg(){
   return '<svg viewBox="0 0 240 110" role="img" aria-label="Car"><path d="M12 78V62q0-8 10-10l40-8 26-24q5-4 12-4h56q8 0 13 5l22 23 38 9q10 3 10 12v13z" fill="currentColor"/><path d="M96 24h46q4 0 7 3l19 17H78z" fill="var(--card)"/><circle cx="66" cy="80" r="17" fill="var(--text)"/><circle cx="66" cy="80" r="7" fill="var(--card)"/><circle cx="178" cy="80" r="17" fill="var(--text)"/><circle cx="178" cy="80" r="7" fill="var(--card)"/></svg>';
 }
 
+var API = (self.MC_API || "").replace(/\/+$/, ""), pushState = "na", busy = false, bellMsg = "";
+function apiOk(){ return /^https:\/\/.+/.test(API); }
+function standalone(){ return navigator.standalone === true || matchMedia("(display-mode: standalone)").matches; }
+function pushReady(){ return apiOk() && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+function u8(x){ x = x.replace(/-/g, "+").replace(/_/g, "/"); return Uint8Array.from(atob(x), function(c){ return c.charCodeAt(0); }); }
+function post(path, data){ return fetch(API + path, {method:"POST", headers:{"Content-Type":"text/plain"}, body:JSON.stringify(data)}); }
+function getSub(){ return navigator.serviceWorker.ready.then(function(r){ return r.pushManager.getSubscription(); }); }
+function syncPush(){
+  if (pushState !== "on") return;
+  getSub().then(function(sub){
+    if (sub) post("/sync", {endpoint:sub.endpoint, lang:lang, cars:cars.map(function(c){ return {n:short(c.name), i:c.insp, s:c.ins}; })});
+  }).catch(function(){});
+}
+function refreshPush(){
+  if (!pushReady()) { pushState = (apiOk() && /iPhone|iPad/.test(navigator.userAgent) && !standalone()) ? "ios" : "na"; render(); return; }
+  if (Notification.permission === "denied") { pushState = "denied"; render(); return; }
+  getSub().then(function(sub){ pushState = sub && Notification.permission === "granted" ? "on" : "off"; render(); syncPush(); }).catch(function(){ pushState = "na"; render(); });
+}
+function pushAct(a){
+  if (busy) return; busy = true;
+  var s = T(), done = function(m){ busy = false; bellMsg = m || ""; refreshPush(); };
+  if (a === "on") {
+    Notification.requestPermission().then(function(p){
+      if (p !== "granted") return done();
+      return navigator.serviceWorker.ready.then(function(reg){
+        return fetch(API + "/key").then(function(r){ return r.text(); }).then(function(k){
+          return reg.pushManager.getSubscription().then(function(sub){ return sub || reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:u8(k.trim())}); });
+        });
+      }).then(function(){ done(); });
+    }).catch(function(){ done(s.nErr); });
+  } else {
+    getSub().then(function(sub){
+      if (!sub) return done();
+      if (a === "test") return post("/test", {endpoint:sub.endpoint}).then(function(){ done(s.nTestMsg); });
+      return post("/remove", {endpoint:sub.endpoint}).catch(function(){}).then(function(){ return sub.unsubscribe(); }).then(function(){ done(s.nOffMsg); });
+    }).catch(function(){ done(s.nErr); });
+  }
+}
+function bell(){
+  var s = T(), b = "";
+  if (pushState === "off") b = '<p>' + s.nBody + '</p><div class="row"><button class="primary" data-n="on">' + s.nEnable + '</button></div>';
+  else if (pushState === "on") b = '<p>' + s.nOn + '</p><div class="row"><button class="ghost" data-n="test">' + s.nTest + '</button><button class="ghost" data-n="off">' + s.nOff + '</button></div>';
+  else if (pushState === "ios") b = '<p>' + s.nIos + '</p>';
+  else if (pushState === "denied") b = '<p>' + s.nDenied + '</p>';
+  else return "";
+  return '<div class="card bell"><h3>' + s.nTitle + '</h3>' + b + (bellMsg ? '<p><b>' + bellMsg + '</b></p>' : '') + '</div>';
+}
 var dlg = document.getElementById("dlg"), f = document.getElementById("f"), delBtn = document.getElementById("del"), pf = document.getElementById("pf"), msg = document.getElementById("msg");
 var addBtn = document.getElementById("add"), themeBtn = document.getElementById("theme"), langBtn = document.getElementById("lang"), root = document.documentElement;
 
@@ -227,7 +280,7 @@ function render(){
     var chips = [["all", it.length, s.allF], ["red", n.red, s.Urgent], ["yellow", n.yellow, s.Soon], ["green", n.green, s.OK]].map(function(x){
       return '<button class="chip ' + x[0] + (filt === x[0] ? " on" : "") + '" data-f="' + x[0] + '"><b>' + x[1] + '</b><small>' + x[2] + '</small></button>';
     }).join("");
-    v.innerHTML = '<div class="seg">' + chips + '</div>' + it.filter(function(i){ return filt === "all" || i.st === filt; }).map(function(i){ return row(i, true); }).join("");
+    v.innerHTML = bell() + '<div class="seg">' + chips + '</div>' + it.filter(function(i){ return filt === "all" || i.st === filt; }).map(function(i){ return row(i, true); }).join("");
   } else {
     var c = getCar(tab);
     v.innerHTML = '<div class="hero">' + (c.photo ? '<img alt="" src="' + c.photo + '">' : svg()) + '</div>' +
@@ -266,6 +319,7 @@ addBtn.onclick = function(){ edit(null); };
 document.getElementById("cancel").onclick = function(){ dlg.close(); };
 document.getElementById("tabs").onclick = function(e){ var b = e.target.closest(".tab"); if (b) { tab = b.dataset.tab === "all" ? "all" : Number(b.dataset.tab); render(); } };
 document.getElementById("view").onclick = function(e){
+  var nb = e.target.closest("[data-n]"); if (nb) { pushAct(nb.dataset.n); return; }
   var ch = e.target.closest(".chip"); if (ch) { filt = ch.dataset.f; render(); return; }
   var cp = e.target.closest("[data-copy]");
   if (cp) {
@@ -308,12 +362,13 @@ f.onsubmit = function(e){
 
 function setTheme(t){ root.dataset.theme = t; themeUi(); try { localStorage.setItem(TKEY, t); } catch (e) {} }
 themeBtn.onclick = function(){ setTheme(root.dataset.theme === "dark" ? "light" : "dark"); };
-langBtn.onclick = function(){ lang = lang === "lt" ? "en" : "lt"; try { localStorage.setItem(GKEY, lang); } catch (e) {} applyLang(); };
+langBtn.onclick = function(){ lang = lang === "lt" ? "en" : "lt"; try { localStorage.setItem(GKEY, lang); } catch (e) {} applyLang(); syncPush(); };
 try { lang = localStorage.getItem(GKEY) || "lt"; } catch (e) {}
 var savedTheme = null; try { savedTheme = localStorage.getItem(TKEY); } catch (e) {}
 setTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 applyLang();
 if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(function(){}); }
+refreshPush();
 </script>
 </body>
 </html>
