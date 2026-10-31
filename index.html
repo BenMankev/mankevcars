@@ -37,6 +37,7 @@ h1 span{color:var(--accent)}
 .primary:disabled{opacity:.5;cursor:not-allowed}
 .tabs{display:flex;gap:8px;overflow-x:auto;margin:18px -16px 16px;padding:0 16px 4px;scrollbar-width:none}
 .tab{flex:0 0 auto;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:9px 17px}
+.tab[data-tab="all"]{max-width:none}
 .tab[aria-selected="true"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
 .red{--c:var(--red);--t:color-mix(in srgb,var(--red) 13%,var(--card))}
 .yellow{--c:var(--yel);--t:color-mix(in srgb,var(--yel) 15%,var(--card))}
@@ -92,11 +93,39 @@ input{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;b
 .bell p{margin:0;color:var(--muted);font-size:.9rem}
 .bell p b{color:var(--text)}
 .bell .row{margin-top:2px;justify-content:flex-start;flex-wrap:wrap}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.sh{margin:14px 0 12px}
+.bell .dr{padding:4px 0;border-top:0}
+.lic{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:8px 12px;text-align:left;font-weight:500}
+.lic .ico{width:34px;height:34px;border-radius:10px}
+.lic .ico svg{width:19px;height:19px}
+.lic .lt{display:grid;flex:1;min-width:0}
+.lic .lt b{font-weight:800;font-size:.95rem}
+.lic small{color:var(--muted)}
+.lic.empty{color:var(--muted);border-style:dashed;--c:var(--accent);--t:color-mix(in srgb,var(--accent) 13%,var(--card))}
+.le{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:none;color:var(--text);border:0;border-top:1px solid var(--line);padding:11px 0;font-weight:500}
+.le span{display:grid;min-width:0}
+.le b{font-weight:800}
+.le small{color:var(--muted);font-size:.84rem}
+.le .lr{text-align:right;white-space:nowrap}
+.dc .lb{margin:6px 0}
+.sum2{display:flex;gap:24px;margin:8px 0 6px}
+.sum2 span{display:grid}
+.sum2 small{color:var(--muted);font-size:.8rem}
+.sum2 b{font-size:1.2rem;font-weight:800}
+select{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px}
+#dtt{font-size:1.1rem;word-break:break-all}
+#dpv img{width:100%;max-height:60vh;object-fit:contain;border-radius:12px;margin-top:8px}
+a.primary{display:inline-block;text-decoration:none}
+a.ig{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#833ab4,#e1306c 55%,#fcb045);color:#fff;border:0;text-decoration:none}
+a.ig .ico{background:rgba(255,255,255,.22);color:#fff}
+a.ig small{color:rgba(255,255,255,.9);font-size:.86rem}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><h1>Mankev<span>Cars</span></h1><button class="ghost icon" id="lang">EN</button><button class="ghost icon" id="theme"></button><button class="primary" id="add" data-i="addS"></button></div>
+  <div class="top"><h1>Mankev<span>Cars</span></h1><button class="ghost icon" id="lang" style="display:none">EN</button><button class="ghost icon" id="theme" style="display:none"></button><button class="ghost icon" id="gear" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button><button class="primary" id="add" data-i="addS"></button></div>
+  <div id="lic"></div>
   <nav class="tabs" id="tabs" role="tablist"></nav>
   <div id="view"></div>
   <p class="note" id="msg"></p>
@@ -123,16 +152,31 @@ input{width:100%;padding:11px 12px;margin-top:5px;font:inherit;font-weight:500;b
   </form>
 </dialog>
 
+<dialog id="ldlg"><form id="lf"><h2 data-i="lTitle"></h2>
+  <label><span data-i="lLabel"></span><input name="d" type="date"></label>
+  <div class="row"><button type="button" class="ghost del" id="lclear" data-i="lClear"></button><button type="button" class="ghost" id="lcancel" data-i="cancel"></button><button type="submit" class="primary" data-i="save"></button></div></form></dialog>
+
+<dialog id="mdlg"><form id="mf"><h2 id="mttl"></h2>
+  <label><span data-i="mType"></span><select name="k"></select></label>
+  <label><span data-i="mDate"></span><input name="d" type="date" required></label>
+  <label><span data-i="mKm"></span><input name="km" type="number" inputmode="numeric" min="0"></label>
+  <label><span data-i="mCost"></span><input name="c" type="number" inputmode="decimal" min="0" step="0.01"></label>
+  <label><span data-i="mNote"></span><input name="t" maxlength="80"></label>
+  <div class="row"><button type="button" class="ghost del" id="mdel"></button><button type="button" class="ghost" id="mcancel" data-i="cancel"></button><button type="submit" class="primary" data-i="save"></button></div></form></dialog>
+
+<dialog id="ddlg"><h2 id="dtt"></h2><div id="dpv"></div>
+  <div class="row"><button type="button" class="ghost del" id="ddel"></button><button type="button" class="ghost" id="dshare" data-i="dShare"></button><button type="button" class="primary" id="dclose" data-i="dClose"></button></div></dialog>
+
 <script>
 var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
 var mem = null, cur = null, armed = false, tab = "all", filt = "all", lang = "lt";
 var L = {
-  lt: {loc:"lt-LT", nTitle:"Priminimai telefone", nBody:"Gaukite pranešimą, kai artėja techninė apžiūra ar draudimo pabaiga.", nEnable:"Įjungti priminimus", nOn:"Priminimai įjungti šiame telefone. Pranešimas ateina likus 30, 14, 7, 3 ir 1 dienai, datos dieną ir kas savaitę pavėlavus. Alyvos keitimas kol kas neįtrauktas.", nTest:"Siųsti bandomąjį", nOff:"Išjungti", nIos:"Norėdami gauti pranešimus iPhone, pridėkite programą į pradžios ekraną (Bendrinti, tada Pridėti į pradžios ekraną) ir atidarykite ją iš ten.", nDenied:"Pranešimai šiai programai užblokuoti. Leiskite juos telefono nustatymuose.", nErr:"Nepavyko įjungti priminimų. Bandykite dar kartą.", nTestMsg:"Bandomasis pranešimas išsiųstas.", nOffMsg:"Priminimai išjungti.", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
+  lt: {loc:"lt-LT", lTitle:"Vairuotojo pažymėjimas", lAdd:"+ Vairuotojo pažymėjimo galiojimas", lUntil:"Galioja iki ", lLabel:"Galioja iki", lClear:"Pašalinti", mTitleLog:"Priežiūra ir išlaidos", mAdd:"Pridėti įrašą", mEdit:"Redaguoti įrašą", mTotal:"Iš viso", mEmpty:"Įrašų dar nėra. Fiksuokite remontą, alyvos keitimą ir kitas išlaidas.", mType:"Rūšis", mDate:"Data", mKm:"Rida (km)", mCost:"Kaina (€)", mNote:"Pastaba", delE:"Ištrinti", k_oil:"Alyvos keitimas", k_service:"Techninis aptarnavimas", k_repair:"Remontas", k_tyres:"Padangos", k_parts:"Dalys", k_insp:"Techninė apžiūra", k_ins:"Draudimas", k_other:"Kita", dTitle:"Dokumentai", dNote:"Dokumentai saugomi tik šiame telefone ir į atsargines kopijas neįtraukiami.", dAdd:"Pridėti dokumentą", dEmpty:"Dokumentų dar nėra. Pridėkite techpaso, draudimo ar kitų dokumentų nuotraukas ar PDF failus.", dShare:"Atidaryti / dalytis", dClose:"Uždaryti", dBig:"Failas per didelis (daugiausia 15 MB).", dErr:"Nepavyko išsaugoti dokumento.", dNoPrev:"Šio failo peržiūra nepalaikoma. Naudokite „Atidaryti / dalytis“.", dImg:"Nuotrauka", spTitle:"Paremkite projektą", spText:"Programa nemokama. Jei ji jums naudinga, galite paremti jos kūrėją.", spBtn:"Paremti", igText:"Sekite naujienas ir patarimus Instagram", sTitle:"Nustatymai", sBack:"Atgal", sLang:"Kalba", sTheme:"Išvaizda", oLight:"Šviesi", oDark:"Tamsi", aTitle:"Automatinė kopija", aBody:"Programa automatiškai išsaugo jūsų automobilių kopiją internete. Ji užšifruojama jūsų telefone, todėl paslauga jos perskaityti negali.", aOn:"Įjungta", aOff:"Išjungta", aLast:"Paskutinė automatinė kopija: ", aNone:"Kopija dar nesukurta.", aCode:"Atsarginės kopijos kodas", aCodeHelp:"Išsaugokite šį kodą saugioje vietoje, pavyzdžiui, užrašuose. Jo reikės automobiliams atkurti naujame telefone. Be kodo kopijos atkurti neįmanoma.", aRestoreT:"Atkurti naudojant kodą", aRestore:"Atkurti", aNoCopy:"Kopijos su šiuo kodu nerasta.", aErr:"Nepavyko atkurti. Patikrinkite kodą ir ryšį.", aDeleted:"Internetinė kopija ištrinta.", mTitle:"Kopija į failą", emptyHint:"Naujame telefone? Atkurkite automobilius nustatymuose.", bTitle:"Atsarginė kopija", bBody:"Išsaugokite automobilių sąrašą faile, kad galėtumėte jį atkurti naujame telefone.", bLast:"Paskutinė kopija: ", bSave:"Sukurti kopiją", bRestore:"Atkurti iš failo", bDone:"Kopija sukurta.", bReplace:"Pakeisti", bBad:"Šis failas netinka. Pasirinkite MankevCars kopijos failą.", bRestored:"Atkurta.", bFound:function(n){ return "Rasta automobilių: " + n + ". Pakeisti dabartinį sąrašą šiame telefone?"; }, nTitle:"Priminimai telefone", nBody:"Gaukite pranešimą, kai artėja techninė apžiūra ar draudimo pabaiga.", nEnable:"Įjungti priminimus", nOn:"Priminimai įjungti šiame telefone. Pranešimas ateina likus 30, 14, 7, 3 ir 1 dienai, datos dieną ir kas savaitę pavėlavus. Alyvos keitimas kol kas neįtrauktas.", nTest:"Siųsti bandomąjį", nOff:"Išjungti", nIos:"Norėdami gauti pranešimus iPhone, pridėkite programą į pradžios ekraną (Bendrinti, tada Pridėti į pradžios ekraną) ir atidarykite ją iš ten.", nDenied:"Pranešimai šiai programai užblokuoti. Leiskite juos telefono nustatymuose.", nErr:"Nepavyko įjungti priminimų. Bandykite dar kartą.", nTestMsg:"Bandomasis pranešimas išsiųstas.", nOffMsg:"Priminimai išjungti.", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
     Urgent:"Skubu", Soon:"Netrukus", OK:"Tvarkoje", insp:"Techninė apžiūra", ins:"Draudimas baigiasi", oil:"Alyvos keitimas",
     addCur:"Įveskite dabartinę ridą", edit:"Redaguoti", addPh:"Pridėti nuotrauką", chPh:"Keisti nuotrauką",
     det:"Automobilio duomenys", plate:"Valstybinis numeris", vin:"VIN kodas", reg:"Registracijos liudijimo (techpaso) Nr.",
     copy:"Kopijuoti", copied:"Nukopijuota", copyErr:"Nepavyko",
-    note:"Duomenys saugomi tik šiame įrenginyje.", empty:"Dar nėra automobilių. Spustelėkite „+ Pridėti“, kad įvestumėte pirmąjį.",
+    note:"Duomenys saugomi šiame telefone. Užšifruotą kopiją valdykite nustatymuose.", empty:"Dar nėra automobilių. Spustelėkite „+ Pridėti“, kad įvestumėte pirmąjį.",
     phOk:"Nuotrauka išsaugota šiame įrenginyje.", phErr:"Nepavyko išsaugoti nuotraukos šiame įrenginyje.", limit:"Pasiektas limitas: iki 10 automobilių.",
     tAdd:"Pridėti automobilį", tEdit:"Redaguoti automobilį", lName:"Automobilio pavadinimas", lPlate:"Valstybinis numeris", lVin:"VIN kodas",
     lReg:"Registracijos liudijimo (techpaso) numeris", lInsp:"Techninė apžiūra iki", lIns:"Draudimas galioja iki",
@@ -141,12 +185,12 @@ var L = {
     days:function(d){ return d < 0 ? "Pavėluota " + (-d) + " d." : d === 0 ? "Šiandien" : "Po " + d + " d."; },
     over:function(n){ return "Viršyta " + n + " km"; }, left:function(n){ return "Liko " + n + " km"; },
     dueAt:function(n){ return "Keisti ties " + n + " km"; }, lastAt:function(n){ return "Paskutinį kartą ties " + n + " km"; }},
-  en: {loc:"en-GB", nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
+  en: {loc:"en-GB", lTitle:"Driving licence", lAdd:"+ Driving licence expiry", lUntil:"Valid until ", lLabel:"Valid until", lClear:"Remove", mTitleLog:"Maintenance and costs", mAdd:"Add entry", mEdit:"Edit entry", mTotal:"Total", mEmpty:"No entries yet. Record repairs, oil changes and other costs.", mType:"Type", mDate:"Date", mKm:"Odometer (km)", mCost:"Cost (€)", mNote:"Note", delE:"Delete", k_oil:"Oil change", k_service:"Service", k_repair:"Repair", k_tyres:"Tyres", k_parts:"Parts", k_insp:"Inspection", k_ins:"Insurance", k_other:"Other", dTitle:"Documents", dNote:"Documents are stored on this phone only and are not included in backups.", dAdd:"Add document", dEmpty:"No documents yet. Add photos or PDFs of the registration certificate, insurance and other papers.", dShare:"Open / share", dClose:"Close", dBig:"File too large (15 MB maximum).", dErr:"Could not save the document.", dNoPrev:"This file cannot be previewed. Use Open / share.", dImg:"Photo", spTitle:"Support the project", spText:"The app is free. If it helps you, you can support its creator.", spBtn:"Support", igText:"Follow for news and tips on Instagram", sTitle:"Settings", sBack:"Back", sLang:"Language", sTheme:"Appearance", oLight:"Light", oDark:"Dark", aTitle:"Automatic backup", aBody:"The app automatically saves a copy of your cars online. It is encrypted on your phone, so the service cannot read it.", aOn:"On", aOff:"Off", aLast:"Last automatic backup: ", aNone:"No backup yet.", aCode:"Backup code", aCodeHelp:"Save this code somewhere safe, for example in your notes. You need it to restore your cars on a new phone. Without it the copy cannot be restored.", aRestoreT:"Restore with a code", aRestore:"Restore", aNoCopy:"No backup found for this code.", aErr:"Could not restore. Check the code and your connection.", aDeleted:"Online copy deleted.", mTitle:"Backup to a file", emptyHint:"New phone? Restore your cars in Settings.", bTitle:"Backup", bBody:"Save your cars to a file so you can restore them on a new phone.", bLast:"Last backup: ", bSave:"Back up", bRestore:"Restore from file", bDone:"Backup created.", bReplace:"Replace", bBad:"This file does not work. Choose a MankevCars backup file.", bRestored:"Restored.", bFound:function(n){ return "Found " + n + (n === 1 ? " car" : " cars") + ". Replace the list on this phone?"; }, nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
     Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
     addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
     det:"Vehicle details", plate:"Number plate", vin:"VIN code", reg:"Registration certificate no.",
     copy:"Copy", copied:"Copied", copyErr:"Failed",
-    note:"Saved on this device only.", empty:"No cars yet. Tap + Add car to enter the first one.",
+    note:"Data is stored on this phone. Manage the encrypted backup in Settings.", empty:"No cars yet. Tap + Add car to enter the first one.",
     phOk:"Photo saved on this device.", phErr:"The photo could not be saved on this device.", limit:"Limit reached: up to 10 cars.",
     tAdd:"Add car", tEdit:"Edit car", lName:"Car name", lPlate:"Number plate", lVin:"VIN code",
     lReg:"Registration certificate number (techpaso)", lInsp:"Technical inspection due", lIns:"Insurance expires",
@@ -163,7 +207,7 @@ function load(){
 }
 var cars = load();
 function save(){
-  mem = cars; syncPush();
+  mem = cars; syncPush(); schedAuto();
   try { localStorage.setItem(KEY, JSON.stringify(cars)); return true; } catch (e) { return false; }
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
@@ -226,7 +270,7 @@ function getSub(){ return navigator.serviceWorker.ready.then(function(r){ return
 function syncPush(){
   if (pushState !== "on") return;
   getSub().then(function(sub){
-    if (sub) post("/sync", {endpoint:sub.endpoint, lang:lang, cars:cars.map(function(c){ return {n:short(c.name), i:c.insp, s:c.ins}; })});
+    if (sub) post("/sync", {endpoint:sub.endpoint, lang:lang, l:getLic(), cars:cars.map(function(c){ return {n:short(c.name), i:c.insp, s:c.ins}; })});
   }).catch(function(){});
 }
 function refreshPush(){
@@ -263,29 +307,334 @@ function bell(){
   else return "";
   return '<div class="card bell"><h3>' + s.nTitle + '</h3>' + b + (bellMsg ? '<p><b>' + bellMsg + '</b></p>' : '') + '</div>';
 }
+var pend = null, bkMsg = "", BK = "mankevCars.lastBackup";
+function dayStr(){ return new Date().toLocaleDateString("en-CA"); }
+function backupHtml(){
+  var s = T(), last = ""; try { last = localStorage.getItem(BK) || ""; } catch (e) {}
+  return '<div class="card bell"><h3>' + s.mTitle + '</h3><p>' + s.bBody + (last ? ' ' + s.bLast + fmt(last) + '.' : '') + '</p><div class="row"><button class="primary" data-b="save">' + s.bSave + '</button><button class="ghost" data-b="load">' + s.bRestore + '</button></div>' + (bkMsg ? '<p><b>' + bkMsg + '</b></p>' : '') + '</div>';
+}
+function confirmHtml(){
+  if (!pend) return "";
+  var s = T();
+  return '<div class="card bell"><h3>' + s.bTitle + '</h3><p><b>' + s.bFound(pend.length) + '</b></p><div class="row"><button class="primary" data-b="yes">' + s.bReplace + '</button><button class="ghost" data-b="no">' + s.cancel + '</button></div></div>';
+}
+function clean(c, i){
+  if (!c || typeof c.name !== "string" || !c.name.trim()) return null;
+  var d = function(x){ return /^\d{4}-\d{2}-\d{2}$/.test(x || "") ? x : ""; };
+  var n = function(x){ return typeof x === "number" && isFinite(x) ? x : null; };
+  var t = function(x, m){ return typeof x === "string" ? x.slice(0, m) : ""; };
+  var ph = typeof c.photo === "string" && c.photo.indexOf("data:image/") === 0 && c.photo.length < 3e6 ? c.photo : undefined;
+  var lg = (Array.isArray(c.log) ? c.log : []).slice(0, 300).map(function(e, j){
+    if (!e || !d(e.d)) return null;
+    return {id: (typeof e.id === "number" && isFinite(e.id)) ? e.id : Date.now() + 1000 + j, d: e.d, k: KT.indexOf(e.k) >= 0 ? e.k : "other", km: n(e.km), c: n(e.c), t: t(e.t, 80)};
+  }).filter(Boolean);
+  return {id: (typeof c.id === "number" && isFinite(c.id)) ? c.id : Date.now() + i, name: c.name.trim().slice(0, 60), plate: t(c.plate, 10), vin: t(c.vin, 17), reg: t(c.reg, 20), insp: d(c.insp), ins: d(c.ins), oilKm: n(c.oilKm), km: n(c.km), int: n(c.int) || 15000, photo: ph, log: lg};
+}
+function doBackup(){
+  var name = "mankevcars-backup-" + dayStr() + ".json";
+  var blob = new Blob([JSON.stringify({app:"MankevCars", v:1, lic:getLic(), cars:cars})], {type:"application/json"});
+  var ok = function(){ try { localStorage.setItem(BK, dayStr()); } catch (e) {} bkMsg = T().bDone; render(); };
+  var file = null; try { file = new File([blob], name, {type:"application/json"}); } catch (e) {}
+  if (file && navigator.canShare && navigator.canShare({files:[file]})) {
+    navigator.share({files:[file], title:name}).then(ok, function(){});
+  } else {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000); ok();
+  }
+}
+var rf = document.createElement("input"); rf.type = "file"; rf.accept = ".json,application/json"; rf.hidden = true; document.body.appendChild(rf);
+rf.onchange = function(){
+  var file = rf.files[0]; if (!file) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try {
+      var d = JSON.parse(r.result), list = (d.cars || []).slice(0, MAX).map(clean).filter(Boolean);
+      if (d.app !== "MankevCars" || !list.length) throw 0;
+      pend = list; pendLic = licOf(d); bkMsg = "";
+    } catch (e) { pend = null; bkMsg = T().bBad; }
+    render(); window.scrollTo(0, 0);
+  };
+  r.readAsText(file); rf.value = "";
+};
+var page = "main", aMsg = "", pendCode = null, autoTm = null;
+var BCODE = "mankevCars.code", AK = "mankevCars.auto", LA = "mankevCars.lastAuto";
+var gear = document.getElementById("gear");
+gear.onclick = function(){ page = "settings"; render(); window.scrollTo(0, 0); };
+function autoOn(){ try { return localStorage.getItem(AK) !== "0"; } catch (e) { return true; } }
+function autoDue(){ try { return autoOn() && localStorage.getItem(LA) !== dayStr(); } catch (e) { return false; } }
+function newCode(){
+  var A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = crypto.getRandomValues(new Uint8Array(20)), o = "";
+  for (var i = 0; i < 20; i++) { o += A[r[i] % 32]; if (i % 4 === 3 && i < 19) o += "-"; }
+  return o;
+}
+function getCode(){
+  var c = null; try { c = localStorage.getItem(BCODE); } catch (e) {}
+  if (!c) { c = newCode(); try { localStorage.setItem(BCODE, c); } catch (e) {} }
+  return c;
+}
+function norm(c){ return String(c).toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+function fmtCode(n){ return n.replace(/(.{4})(?=.)/g, "$1-"); }
+function sha(x){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(x)); }
+function hex(b){ return Array.from(new Uint8Array(b)).map(function(x){ return ("0" + x.toString(16)).slice(-2); }).join(""); }
+function b64(buf){ var s = "", u = new Uint8Array(buf); for (var i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(s); }
+function unb64(x){ var b = atob(x), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+async function keysFor(code){
+  var n = norm(code);
+  return { id: hex(await sha("id:" + n)), k: await crypto.subtle.importKey("raw", await sha("enc:" + n), "AES-GCM", false, ["encrypt", "decrypt"]) };
+}
+async function seal(code, obj){
+  var o = await keysFor(code), iv = crypto.getRandomValues(new Uint8Array(12));
+  var ct = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv: iv}, o.k, new TextEncoder().encode(JSON.stringify(obj))));
+  var all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
+  return { id: o.id, body: b64(all) };
+}
+async function unseal(code, txt){
+  var o = await keysFor(code), u = unb64(txt.trim());
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: "AES-GCM", iv: u.subarray(0, 12)}, o.k, u.subarray(12))));
+}
+async function autoBackup(){
+  if (!autoOn() || !apiOk() || !cars.length || !(window.crypto && crypto.subtle)) return;
+  try {
+    var code = getCode(), r = await seal(code, {app: "MankevCars", v: 1, lic: getLic(), cars: cars});
+    if (r.body.length > 4e6) r = await seal(code, {app: "MankevCars", v: 1, lic: getLic(), cars: cars.map(function(c){ var x = Object.assign({}, c); delete x.photo; return x; })});
+    var res = await fetch(API + "/b/" + r.id, {method: "POST", headers: {"Content-Type": "text/plain"}, body: r.body});
+    if (res.ok) { try { localStorage.setItem(LA, dayStr()); } catch (e) {} if (page === "settings") render(); }
+  } catch (e) {}
+}
+function schedAuto(ms){ clearTimeout(autoTm); autoTm = setTimeout(autoBackup, ms == null ? 6000 : ms); }
+function delRemote(){ keysFor(getCode()).then(function(o){ return fetch(API + "/b/" + o.id, {method: "POST", headers: {"Content-Type": "text/plain"}, body: ""}); }).catch(function(){}); }
+async function restoreCode(){
+  var inp = document.getElementById("rc"), code = norm(inp ? inp.value : "");
+  if (code.length !== 20) { aMsg = T().aErr; render(); return; }
+  try {
+    var o = await keysFor(code), r = await fetch(API + "/b/" + o.id);
+    if (r.status === 404) { aMsg = T().aNoCopy; render(); return; }
+    var d = await unseal(code, await r.text()), list = (d.cars || []).slice(0, MAX).map(clean).filter(Boolean);
+    if (d.app !== "MankevCars" || !list.length) throw 0;
+    pend = list; pendCode = code; pendLic = licOf(d); aMsg = ""; bkMsg = "";
+  } catch (e) { aMsg = T().aErr; }
+  render(); window.scrollTo(0, 0);
+}
+function bAct(a){
+  if (a === "save") doBackup();
+  else if (a === "load") { bkMsg = ""; rf.click(); }
+  else if (a === "rcode") restoreCode();
+  else if (a === "no") { pend = null; pendCode = null; render(); }
+  else if (a === "yes") {
+    if (pendCode) { try { localStorage.setItem(BCODE, fmtCode(pendCode)); } catch (e) {} pendCode = null; }
+    cars = pend; pend = null; if (pendLic) setLic(pendLic); pendLic = ""; tab = "all"; filt = "all"; page = "main"; bkMsg = ""; aMsg = "";
+    msg.textContent = T().bRestored; save(); render(); window.scrollTo(0, 0);
+  }
+}
+function opts(list, cur){
+  return '<div class="opts">' + list.map(function(x){ return '<button class="tab" aria-selected="' + (x[1] === cur) + '" data-set="' + x[0] + '" data-v="' + x[1] + '">' + x[2] + '</button>'; }).join("") + '</div>';
+}
+function setOpt(k, v){
+  if (k === "lang") { lang = v; try { localStorage.setItem(GKEY, lang); } catch (e) {} applyLang(); syncPush(); return; }
+  if (k === "theme") setTheme(v);
+  else if (k === "auto") {
+    try { localStorage.setItem(AK, v); } catch (e) {}
+    if (v === "1") { aMsg = ""; schedAuto(0); } else { aMsg = T().aDeleted; delRemote(); }
+  }
+  render();
+}
+function settingsHtml(){
+  var s = T(), last = "", code = getCode(); try { last = localStorage.getItem(LA) || ""; } catch (e) {}
+  return '<button class="ghost" data-go="main">' + s.sBack + '</button><h2 class="sh">' + s.sTitle + '</h2>' + confirmHtml() +
+    '<div class="card bell"><h3>' + s.sLang + '</h3>' + opts([["lang", "lt", "Lietuvių"], ["lang", "en", "English"]], lang) + '</div>' +
+    '<div class="card bell"><h3>' + s.sTheme + '</h3>' + opts([["theme", "light", s.oLight], ["theme", "dark", s.oDark]], root.dataset.theme) + '</div>' +
+    bell() +
+    '<div class="card bell"><h3>' + s.aTitle + '</h3><p>' + s.aBody + '</p>' + opts([["auto", "1", s.aOn], ["auto", "0", s.aOff]], autoOn() ? "1" : "0") +
+    '<p>' + (last ? s.aLast + fmt(last) : s.aNone) + '</p>' +
+    '<p><b>' + s.aCode + '</b></p><div class="dr"><div class="dv">' + code + '</div><button class="ghost cp" data-copycode="1">' + s.copy + '</button></div><p>' + s.aCodeHelp + '</p>' +
+    '<p><b>' + s.aRestoreT + '</b></p><input id="rc" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">' +
+    '<div class="row"><button class="ghost" data-b="rcode">' + s.aRestore + '</button></div>' + (aMsg ? '<p><b>' + aMsg + '</b></p>' : '') + '</div>' +
+    backupHtml() + supportHtml() + igHtml();
+}
+var KT = ["oil", "service", "repair", "tyres", "parts", "insp", "ins", "other"];
+var pendLic = "", LK = "mankevCars.license", dMsg = "", docs = {}, dl = {}, DB = null, curDoc = null, dArmed = false, docUrl = null, curLog = null, mArmed = false;
+IC.lic = '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M14 10h4M14 14h4M6 16c.5-1.5 1.5-2 3-2s2.5.5 3 2"/>';
+function licOf(d){ return d && /^\d{4}-\d{2}-\d{2}$/.test(d.lic || "") ? d.lic : ""; }
+function getLic(){ try { return localStorage.getItem(LK) || ""; } catch (e) { return ""; } }
+function setLic(d){ try { if (d) localStorage.setItem(LK, d); else localStorage.removeItem(LK); } catch (e) {} }
+function daysTo(d){ var t = new Date(); t.setHours(0, 0, 0, 0); var p = d.split("-").map(Number); return Math.round((new Date(p[0], p[1] - 1, p[2]) - t) / 864e5); }
+function eur(n){ return n.toLocaleString(T().loc, {style: "currency", currency: "EUR"}); }
+function licHtml(){
+  var s = T(), d = getLic(), icon = '<span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC.lic + '</svg></span>';
+  if (!d) return '<button class="lic empty" data-lic="1">' + icon + '<span class="lt">' + s.lAdd + '</span></button>';
+  var n = daysTo(d), st = n <= 7 ? "red" : n <= 30 ? "yellow" : "green";
+  return '<button class="lic ' + st + '" data-lic="1">' + icon + '<span class="lt"><b>' + s.lTitle + '</b><small>' + s.lUntil + fmt(d) + '</small></span><span class="pill">' + s[WORD[st]] + '</span></button>';
+}
+var ldlg = document.getElementById("ldlg"), lf = document.getElementById("lf");
+document.getElementById("lic").onclick = function(e){ if (e.target.closest("[data-lic]")) { lf.d.value = getLic(); ldlg.showModal(); } };
+document.getElementById("lcancel").onclick = function(){ ldlg.close(); };
+document.getElementById("lclear").onclick = function(){ setLic(""); ldlg.close(); render(); syncPush(); schedAuto(); };
+lf.onsubmit = function(e){ e.preventDefault(); setLic(lf.d.value); ldlg.close(); render(); syncPush(); schedAuto(); };
+
+function logHtml(c){
+  var s = T(), log = (c.log || []).slice().sort(function(a, b){ return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; }), tot = 0, yr = 0, y = String(new Date().getFullYear());
+  log.forEach(function(e){ if (e.c) { tot += e.c; if (e.d.slice(0, 4) === y) yr += e.c; } });
+  var rows = log.map(function(e){
+    return '<button class="le" data-log="' + e.id + '"><span><b>' + s["k_" + e.k] + '</b>' + (e.t ? '<small>' + esc(e.t) + '</small>' : '') + '</span><span class="lr">' + (e.c ? '<b>' + eur(e.c) + '</b>' : '') + '<small>' + fmt(e.d) + (e.km ? ' – ' + nf(e.km) + ' km' : '') + '</small></span></button>';
+  }).join("");
+  return '<div class="card dc"><h3>' + s.mTitleLog + '</h3>' +
+    (log.length ? '<div class="sum2"><span><small>' + s.mTotal + '</small><b>' + eur(tot) + '</b></span><span><small>' + y + '</small><b>' + eur(yr) + '</b></span></div>' + rows : '<p class="lb">' + s.mEmpty + '</p>') +
+    '<div class="row" style="justify-content:flex-start"><button class="primary" data-log="new">' + s.mAdd + '</button></div></div>';
+}
+var mdlg = document.getElementById("mdlg"), mf = document.getElementById("mf"), mdel = document.getElementById("mdel");
+function openLog(id){
+  var c = getCar(tab), s = T(), e = id === "new" ? null : (c.log || []).filter(function(x){ return String(x.id) === String(id); })[0];
+  curLog = e ? e.id : null; mArmed = false; mdel.textContent = s.delE; mdel.style.display = e ? "" : "none";
+  document.getElementById("mttl").textContent = e ? s.mEdit : s.mAdd;
+  mf.k.innerHTML = KT.map(function(k){ return '<option value="' + k + '">' + s["k_" + k] + '</option>'; }).join("");
+  mf.k.value = e ? e.k : "service"; mf.d.value = e ? e.d : dayStr();
+  mf.km.value = e ? (e.km != null ? e.km : "") : (c.km || ""); mf.c.value = e && e.c != null ? e.c : ""; mf.t.value = e ? e.t : "";
+  mdlg.showModal();
+}
+document.getElementById("mcancel").onclick = function(){ mdlg.close(); };
+mdel.onclick = function(){
+  if (!mArmed) { mArmed = true; mdel.textContent = T().del2; return; }
+  var c = getCar(tab); c.log = (c.log || []).filter(function(x){ return x.id !== curLog; }); save(); render(); mdlg.close();
+};
+mf.onsubmit = function(e){
+  e.preventDefault();
+  var c = getCar(tab), num = function(v){ return v === "" ? null : Number(v); };
+  var rec = {id: curLog || Date.now(), d: mf.d.value, k: mf.k.value, km: num(mf.km.value), c: num(mf.c.value), t: mf.t.value.trim()};
+  c.log = c.log || [];
+  if (curLog) c.log = c.log.map(function(x){ return x.id === curLog ? rec : x; }); else c.log.push(rec);
+  if (rec.k === "oil" && rec.km && rec.km >= (c.oilKm || 0)) c.oilKm = rec.km;
+  if (rec.km && rec.km > (c.km || 0)) c.km = rec.km;
+  save(); render(); mdlg.close();
+};
+
+function dbOpen(){
+  if (!DB) DB = new Promise(function(res, rej){
+    var q = indexedDB.open("mankevcars-docs", 1);
+    q.onupgradeneeded = function(){ q.result.createObjectStore("docs", {keyPath: "id"}).createIndex("car", "car"); };
+    q.onsuccess = function(){ res(q.result); }; q.onerror = function(){ rej(q.error); };
+  });
+  return DB;
+}
+function dbDo(mode, fn){
+  return dbOpen().then(function(db){ return new Promise(function(res, rej){
+    var tx = db.transaction("docs", mode), r = fn(tx.objectStore("docs"));
+    tx.oncomplete = function(){ res(r && r.result); }; tx.onerror = tx.onabort = function(){ rej(tx.error); };
+  }); });
+}
+function loadDocs(id){
+  dbDo("readonly", function(st){ return st.index("car").getAll(id); }).then(function(l){
+    docs[id] = (l || []).sort(function(a, b){ return b.id - a.id; }); if (tab === id && page === "main") render();
+  }).catch(function(){ docs[id] = []; });
+}
+function dropDocs(id){
+  dbDo("readonly", function(st){ return st.index("car").getAll(id); }).then(function(l){
+    return dbDo("readwrite", function(st){ (l || []).forEach(function(d){ st.delete(d.id); }); });
+  }).catch(function(){});
+}
+function kb(n){ return n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB"; }
+function docsHtml(c){
+  var s = T();
+  if (!docs[c.id] && !dl[c.id]) { dl[c.id] = true; loadDocs(c.id); }
+  var rows = (docs[c.id] || []).map(function(d){
+    return '<button class="le" data-doc="' + d.id + '"><span><b>' + esc(d.name) + '</b><small>' + (d.type === "application/pdf" ? "PDF" : s.dImg) + ', ' + kb(d.size) + '</small></span><span class="lr"><small>' + fmt(d.added) + '</small></span></button>';
+  }).join("");
+  return '<div class="card dc"><h3>' + s.dTitle + '</h3><p class="lb">' + s.dNote + '</p>' + (rows || '<p class="lb">' + s.dEmpty + '</p>') +
+    (dMsg ? '<p><b>' + dMsg + '</b></p>' : '') + '<div class="row" style="justify-content:flex-start"><button class="primary" data-docadd="1">' + s.dAdd + '</button></div></div>';
+}
+var df = document.createElement("input"); df.type = "file"; df.accept = "image/*,application/pdf"; df.multiple = true; df.hidden = true; document.body.appendChild(df);
+function shrink(file){
+  return new Promise(function(res, rej){
+    var r = new FileReader();
+    r.onload = function(){
+      var im = new Image();
+      im.onload = function(){
+        var k = Math.min(1, 1800 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+        cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+        cv.toBlob(function(b){ if (b) res(b); else rej(); }, "image/jpeg", 0.82);
+      };
+      im.onerror = rej; im.src = r.result;
+    };
+    r.onerror = rej; r.readAsDataURL(file);
+  });
+}
+df.onchange = function(){
+  var c = getCar(tab), files = Array.prototype.slice.call(df.files); df.value = "";
+  if (!c) return;
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+  Promise.all(files.map(function(f, i){
+    var img = f.type.indexOf("image/") === 0;
+    if (!img && f.type !== "application/pdf") return null;
+    if (!img && f.size > 15e6) { dMsg = T().dBig; return null; }
+    return (img ? shrink(f) : Promise.resolve(f)).then(function(b){
+      var nm = img ? f.name.replace(/\.[^.]+$/, "") + ".jpg" : f.name;
+      return dbDo("readwrite", function(st){ return st.put({id: Date.now() + i, car: c.id, name: nm.slice(0, 60), type: b.type || f.type, size: b.size, added: dayStr(), blob: b}); });
+    });
+  })).then(function(){ delete dl[c.id]; delete docs[c.id]; render(); }).catch(function(){ dMsg = T().dErr; render(); });
+};
+var ddlg = document.getElementById("ddlg"), ddel = document.getElementById("ddel");
+function openDoc(id){
+  dbDo("readonly", function(st){ return st.get(id); }).then(function(d){
+    if (!d) return;
+    curDoc = d; dArmed = false; ddel.textContent = T().delE;
+    if (docUrl) URL.revokeObjectURL(docUrl);
+    docUrl = URL.createObjectURL(d.blob);
+    document.getElementById("dtt").textContent = d.name;
+    document.getElementById("dpv").innerHTML = d.type.indexOf("image/") === 0 ? '<img alt="" src="' + docUrl + '">' : '<p class="lb">' + T().dNoPrev + '</p>';
+    ddlg.showModal();
+  }).catch(function(){});
+}
+ddlg.onclose = function(){ if (docUrl) { URL.revokeObjectURL(docUrl); docUrl = null; } document.getElementById("dpv").innerHTML = ""; };
+document.getElementById("dclose").onclick = function(){ ddlg.close(); };
+document.getElementById("dshare").onclick = function(){
+  var d = curDoc, f = null; try { f = new File([d.blob], d.name, {type: d.type}); } catch (e) {}
+  if (f && navigator.canShare && navigator.canShare({files: [f]})) navigator.share({files: [f], title: d.name}).catch(function(){});
+  else { var a = document.createElement("a"); a.href = docUrl; a.download = d.name; document.body.appendChild(a); a.click(); a.remove(); }
+};
+ddel.onclick = function(){
+  if (!dArmed) { dArmed = true; ddel.textContent = T().del2; return; }
+  var d = curDoc; dbDo("readwrite", function(st){ return st.delete(d.id); }).then(function(){ delete dl[d.car]; delete docs[d.car]; ddlg.close(); render(); });
+};
+
+function supportHtml(){
+  var s = T(), url = String(self.MC_SUPPORT_URL || ""), iban = String(self.MC_IBAN || "");
+  if (!/^https:\/\//.test(url)) url = "";
+  if (!url && !iban) return "";
+  return '<div class="card bell"><h3>' + s.spTitle + '</h3><p>' + s.spText + '</p>' +
+    (iban ? '<div class="dr"><div><div class="dk">' + esc(self.MC_IBAN_NAME || "IBAN") + '</div><div class="dv">' + esc(iban) + '</div></div><button class="ghost cp" data-copyiban="1">' + s.copy + '</button></div>' : '') +
+    (url ? '<div class="row"><a class="primary btnlink" href="' + esc(url) + '" target="_blank" rel="noopener">' + s.spBtn + '</a></div>' : '') + '</div>';
+}
+function igHtml(){
+  var h = String(self.MC_INSTAGRAM || "").replace(/^@/, "").replace(/[^A-Za-z0-9._]/g, "");
+  if (!h) return "";
+  return '<a class="card ig" href="https://www.instagram.com/' + h + '/" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor"/></svg></span><span class="tt"><b>@' + h + '</b><small>' + T().igText + '</small></span></a>';
+}
 var dlg = document.getElementById("dlg"), f = document.getElementById("f"), delBtn = document.getElementById("del"), pf = document.getElementById("pf"), msg = document.getElementById("msg");
 var addBtn = document.getElementById("add"), themeBtn = document.getElementById("theme"), langBtn = document.getElementById("lang"), root = document.documentElement;
 
 function render(){
   var s = T();
+  document.getElementById("lic").innerHTML = page === "main" ? licHtml() : "";
+  if (page === "settings") { document.getElementById("tabs").innerHTML = ""; document.getElementById("view").innerHTML = settingsHtml(); addBtn.disabled = cars.length >= MAX; return; }
   if (tab !== "all" && !getCar(tab)) tab = "all";
   document.getElementById("tabs").innerHTML = '<button class="tab" role="tab" data-tab="all" aria-selected="' + (tab === "all") + '">' + s.all + '</button>' +
     cars.map(function(c){ return '<button class="tab" role="tab" data-tab="' + c.id + '" aria-selected="' + (tab === c.id) + '">' + esc(short(c.name)) + '</button>'; }).join("");
   addBtn.disabled = cars.length >= MAX;
   if (cars.length >= MAX) msg.textContent = s.limit;
   var it = items(), v = document.getElementById("view");
-  if (!cars.length) { v.innerHTML = '<div class="empty"><div>' + svg() + '</div>' + s.empty + '</div>'; return; }
+  if (!cars.length) { v.innerHTML = '<div class="empty"><div>' + svg() + '</div>' + s.empty + '<p>' + s.emptyHint + '</p><button class="ghost" data-go="settings">' + s.sTitle + '</button></div>'; return; }
   if (tab === "all") {
     var n = {red:0, yellow:0, green:0}; it.forEach(function(i){ n[i.st]++; });
     var chips = [["all", it.length, s.allF], ["red", n.red, s.Urgent], ["yellow", n.yellow, s.Soon], ["green", n.green, s.OK]].map(function(x){
       return '<button class="chip ' + x[0] + (filt === x[0] ? " on" : "") + '" data-f="' + x[0] + '"><b>' + x[1] + '</b><small>' + x[2] + '</small></button>';
     }).join("");
-    v.innerHTML = bell() + '<div class="seg">' + chips + '</div>' + it.filter(function(i){ return filt === "all" || i.st === filt; }).map(function(i){ return row(i, true); }).join("");
+    v.innerHTML = '<div class="seg">' + chips + '</div>' + it.filter(function(i){ return filt === "all" || i.st === filt; }).map(function(i){ return row(i, true); }).join("");
   } else {
     var c = getCar(tab);
     v.innerHTML = '<div class="hero">' + (c.photo ? '<img alt="" src="' + c.photo + '">' : svg()) + '</div>' +
       '<div class="carhead"><div class="id"><h2>' + esc(c.name) + '</h2>' + plateHtml(c.plate) + '</div><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
-      it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("") + details(c);
+      it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("") + details(c) + logHtml(c) + docsHtml(c);
   }
 }
 
@@ -298,7 +647,7 @@ function applyLang(){
   var s = T();
   root.lang = lang;
   document.querySelectorAll("[data-i]").forEach(function(e){ e.textContent = s[e.dataset.i]; });
-  themeUi(); langBtn.textContent = s.sw;
+  themeUi(); langBtn.textContent = s.sw; gear.setAttribute("aria-label", s.sTitle);
   document.getElementById("tabs").setAttribute("aria-label", s.cars);
   msg.textContent = s.note;
   render();
@@ -306,6 +655,7 @@ function applyLang(){
 
 function edit(id){
   if (!id && cars.length >= MAX) return;
+  page = "main"; render();
   var c = getCar(id) || {}, s = T();
   cur = c.id || null; armed = false; delBtn.textContent = s.del; delBtn.style.display = cur ? "" : "none";
   document.getElementById("ttl").textContent = cur ? s.tEdit : s.tAdd;
@@ -320,6 +670,16 @@ document.getElementById("cancel").onclick = function(){ dlg.close(); };
 document.getElementById("tabs").onclick = function(e){ var b = e.target.closest(".tab"); if (b) { tab = b.dataset.tab === "all" ? "all" : Number(b.dataset.tab); render(); } };
 document.getElementById("view").onclick = function(e){
   var nb = e.target.closest("[data-n]"); if (nb) { pushAct(nb.dataset.n); return; }
+  var bb = e.target.closest("[data-b]"); if (bb) { bAct(bb.dataset.b); return; }
+  var go = e.target.closest("[data-go]"); if (go) { page = go.dataset.go; render(); window.scrollTo(0, 0); return; }
+  var st = e.target.closest("[data-set]"); if (st) { setOpt(st.dataset.set, st.dataset.v); return; }
+  var cc = e.target.closest("[data-copycode]");
+  if (cc) { if (navigator.clipboard) navigator.clipboard.writeText(getCode()).then(function(){ flash(cc, "copied"); }, function(){ flash(cc, "copyErr"); }); else flash(cc, "copyErr"); return; }
+  var ci = e.target.closest("[data-copyiban]");
+  if (ci) { if (navigator.clipboard) navigator.clipboard.writeText(String(self.MC_IBAN || "")).then(function(){ flash(ci, "copied"); }, function(){ flash(ci, "copyErr"); }); else flash(ci, "copyErr"); return; }
+  var lg = e.target.closest("[data-log]"); if (lg) { openLog(lg.dataset.log); return; }
+  var da = e.target.closest("[data-docadd]"); if (da) { dMsg = ""; df.click(); return; }
+  var dd = e.target.closest("[data-doc]"); if (dd) { openDoc(Number(dd.dataset.doc)); return; }
   var ch = e.target.closest(".chip"); if (ch) { filt = ch.dataset.f; render(); return; }
   var cp = e.target.closest("[data-copy]");
   if (cp) {
@@ -350,12 +710,12 @@ pf.onchange = function(){
 };
 delBtn.onclick = function(){
   if (!armed) { armed = true; delBtn.textContent = T().del2; return; }
-  cars = cars.filter(function(x){ return x.id !== cur; }); save(); msg.textContent = T().note; render(); dlg.close();
+  dropDocs(cur); cars = cars.filter(function(x){ return x.id !== cur; }); save(); msg.textContent = T().note; render(); dlg.close();
 };
 f.onsubmit = function(e){
   e.preventDefault();
   var num = function(v){ return v === "" ? null : Number(v); }, up = function(el){ return el.value.trim().toUpperCase(); }, old = getCar(cur) || {};
-  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo};
+  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo, log: old.log};
   if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; }
   save(); render(); dlg.close();
 };
@@ -369,6 +729,7 @@ setTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "da
 applyLang();
 if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(function(){}); }
 refreshPush();
+if (cars.length && autoDue()) schedAuto(4000);
 </script>
 </body>
 </html>
