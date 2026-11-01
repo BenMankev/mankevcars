@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b5d73">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -122,6 +122,15 @@ a.ig .ico{background:rgba(255,255,255,.22);color:#fff}
 a.ig small{color:rgba(255,255,255,.9);font-size:.86rem}
 .qr{background:#fff;border-radius:16px;padding:8px;width:min(100%,230px);margin:4px auto;line-height:0}
 .qr svg{width:100%;height:auto;display:block}
+html,body{overflow-x:hidden;overscroll-behavior:none;touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+details{margin-top:12px;border:1px dashed var(--line);border-radius:14px;padding:10px 12px}
+summary{font-weight:700;cursor:pointer}
+details .lb{margin:8px 0 0}
+details .row{margin-top:10px}
+.chk{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:600}
+.chk input{width:auto;margin:0}
+.shcode{font-weight:800;font-size:1.5rem;letter-spacing:.08em;text-align:center;background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:14px;margin:12px 0 6px;word-break:break-all}
+.carhead .acts{flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -138,6 +147,12 @@ a.ig small{color:rgba(255,255,255,.9);font-size:.86rem}
 <dialog id="dlg">
   <form id="f">
     <h2 id="ttl"></h2>
+    <details id="codeBox"><summary data-i="impSum"></summary>
+      <p class="lb" data-i="impText"></p>
+      <input id="impCode" placeholder="XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <div class="row"><button type="button" class="ghost" id="impGo" data-i="impBtn"></button></div>
+      <p class="lb" id="impMsg"></p>
+    </details>
     <label><span data-i="lName"></span><input name="name" required placeholder="2020 Dodge Grand Caravan"></label>
     <label><span data-i="lPlate"></span><input name="plate" class="caps" maxlength="10" placeholder="ABC123" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
     <label><span data-i="lVin"></span><input name="vin" class="caps" maxlength="17" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
@@ -170,11 +185,17 @@ a.ig small{color:rgba(255,255,255,.9);font-size:.86rem}
 <dialog id="ddlg"><h2 id="dtt"></h2><div id="dpv"></div>
   <div class="row"><button type="button" class="ghost del" id="ddel"></button><button type="button" class="ghost" id="dshare" data-i="dShare"></button><button type="button" class="primary" id="dclose" data-i="dClose"></button></div></dialog>
 
+<dialog id="sdlg"><h2 data-i="shTitle"></h2><p class="lb" data-i="shText"></p>
+  <label class="chk"><input type="checkbox" id="shPhoto" checked><span data-i="shPhoto"></span></label>
+  <label class="chk"><input type="checkbox" id="shLog"><span data-i="shLog"></span></label>
+  <div id="shOut"></div>
+  <div class="row"><button type="button" class="ghost" id="shClose" data-i="dClose"></button><button type="button" class="primary" id="shGo" data-i="shCreate"></button></div></dialog>
+
 <script>
 var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
 var mem = null, cur = null, armed = false, tab = "all", filt = "all", lang = "lt";
 var L = {
-  lt: {loc:"lt-LT", invTitle:"Pakviesti draugą", invText:"Nuskaitykite QR kodą telefono kamera arba pasidalykite nuoroda. Draugas atidaro nuorodą ir prideda programą į pradžios ekraną.", invShare:"Dalytis", invMsg:"Išbandyk MankevCars – programą, kuri primena apie techninę apžiūrą, draudimą ir alyvos keitimą. Atidaryk nuorodą ir pridėk į pradžios ekraną:", iTitle:"Įdiekite programą telefone", iBtn:"Įdiegti", iLater:"Vėliau", iIos:"Spauskite „Bendrinti“, tada „Pridėti į pradžios ekraną“.", iOther:"Naršyklės meniu pasirinkite „Įdiegti programą“ arba „Pridėti į pradžios ekraną“.", lTitle:"Vairuotojo pažymėjimas", lAdd:"+ Vairuotojo pažymėjimo galiojimas", lUntil:"Galioja iki ", lLabel:"Galioja iki", lClear:"Pašalinti", mTitleLog:"Priežiūra ir išlaidos", mAdd:"Pridėti įrašą", mEdit:"Redaguoti įrašą", mTotal:"Iš viso", mEmpty:"Įrašų dar nėra. Fiksuokite remontą, alyvos keitimą ir kitas išlaidas.", mType:"Rūšis", mDate:"Data", mKm:"Rida (km)", mCost:"Kaina (€)", mNote:"Pastaba", delE:"Ištrinti", k_oil:"Alyvos keitimas", k_service:"Techninis aptarnavimas", k_repair:"Remontas", k_tyres:"Padangos", k_parts:"Dalys", k_insp:"Techninė apžiūra", k_ins:"Draudimas", k_other:"Kita", dTitle:"Dokumentai", dNote:"Dokumentai saugomi tik šiame telefone ir į atsargines kopijas neįtraukiami.", dAdd:"Pridėti dokumentą", dEmpty:"Dokumentų dar nėra. Pridėkite techpaso, draudimo ar kitų dokumentų nuotraukas ar PDF failus.", dShare:"Atidaryti / dalytis", dClose:"Uždaryti", dBig:"Failas per didelis (daugiausia 15 MB).", dErr:"Nepavyko išsaugoti dokumento.", dNoPrev:"Šio failo peržiūra nepalaikoma. Naudokite „Atidaryti / dalytis“.", dImg:"Nuotrauka", spTitle:"Paremkite projektą", spText:"Programa nemokama. Jei ji jums naudinga, galite paremti jos kūrėją.", spBtn:"Paremti", igText:"Sekite naujienas ir patarimus Instagram", sTitle:"Nustatymai", sBack:"Atgal", sLang:"Kalba", sTheme:"Išvaizda", oLight:"Šviesi", oDark:"Tamsi", aTitle:"Automatinė kopija", aBody:"Programa automatiškai išsaugo jūsų automobilių kopiją internete. Ji užšifruojama jūsų telefone, todėl paslauga jos perskaityti negali.", aOn:"Įjungta", aOff:"Išjungta", aLast:"Paskutinė automatinė kopija: ", aNone:"Kopija dar nesukurta.", aCode:"Atsarginės kopijos kodas", aCodeHelp:"Išsaugokite šį kodą saugioje vietoje, pavyzdžiui, užrašuose. Jo reikės automobiliams atkurti naujame telefone. Be kodo kopijos atkurti neįmanoma.", aRestoreT:"Atkurti naudojant kodą", aRestore:"Atkurti", aNoCopy:"Kopijos su šiuo kodu nerasta.", aErr:"Nepavyko atkurti. Patikrinkite kodą ir ryšį.", aDeleted:"Internetinė kopija ištrinta.", mTitle:"Kopija į failą", emptyHint:"Naujame telefone? Atkurkite automobilius nustatymuose.", bTitle:"Atsarginė kopija", bBody:"Išsaugokite automobilių sąrašą faile, kad galėtumėte jį atkurti naujame telefone.", bLast:"Paskutinė kopija: ", bSave:"Sukurti kopiją", bRestore:"Atkurti iš failo", bDone:"Kopija sukurta.", bReplace:"Pakeisti", bBad:"Šis failas netinka. Pasirinkite MankevCars kopijos failą.", bRestored:"Atkurta.", bFound:function(n){ return "Rasta automobilių: " + n + ". Pakeisti dabartinį sąrašą šiame telefone?"; }, nTitle:"Priminimai telefone", nBody:"Gaukite pranešimą, kai artėja techninė apžiūra ar draudimo pabaiga.", nEnable:"Įjungti priminimus", nOn:"Priminimai įjungti šiame telefone. Pranešimas ateina likus 30, 14, 7, 3 ir 1 dienai, datos dieną ir kas savaitę pavėlavus. Alyvos keitimas kol kas neįtrauktas.", nTest:"Siųsti bandomąjį", nOff:"Išjungti", nIos:"Norėdami gauti pranešimus iPhone, pridėkite programą į pradžios ekraną (Bendrinti, tada Pridėti į pradžios ekraną) ir atidarykite ją iš ten.", nDenied:"Pranešimai šiai programai užblokuoti. Leiskite juos telefono nustatymuose.", nErr:"Nepavyko įjungti priminimų. Bandykite dar kartą.", nTestMsg:"Bandomasis pranešimas išsiųstas.", nOffMsg:"Priminimai išjungti.", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
+  lt: {loc:"lt-LT", shBtn:"Dalytis duomenimis", shTitle:"Dalytis automobilio duomenimis", shText:"Sukursime kodą. Kitas vartotojas įveda jį programoje ir gauna šio automobilio duomenis, todėl jam nieko nereikia perrašinėti. Dokumentai niekada nesiunčiami.", shPhoto:"Įtraukti nuotrauką", shLog:"Įtraukti priežiūros istoriją ir išlaidas", shCreate:"Sukurti kodą", shValid:"Kodas galioja 3 dienas. Duomenys užšifruoti, juos perskaityti gali tik turintis kodą.", shErr:"Nepavyko sukurti kodo. Patikrinkite ryšį.", shMsg:function(c){ return "Dalinuosi automobilio duomenimis programoje MankevCars. Atidarykite programą, spauskite „+ Pridėti“, pasirinkite „Turite kodą iš kito vartotojo?“ ir įveskite kodą " + c + " (galioja 3 dienas). Programa: "; }, impSum:"Turite kodą iš kito vartotojo?", impText:"Įveskite kodą, kad automobilio duomenys būtų užpildyti automatiškai.", impBtn:"Gauti duomenis", impBad:"Kodą sudaro 12 simbolių.", impNone:"Kodo nerasta arba jo galiojimas baigėsi.", impBad2:"Nepavyko gauti duomenų. Patikrinkite kodą ir ryšį.", impOk:"Duomenys užpildyti. Peržiūrėkite ir išsaugokite.", invTitle:"Pakviesti draugą", invText:"Nuskaitykite QR kodą telefono kamera arba pasidalykite nuoroda. Draugas atidaro nuorodą ir prideda programą į pradžios ekraną.", invShare:"Dalytis", invMsg:"Išbandyk MankevCars – programą, kuri primena apie techninę apžiūrą, draudimą ir alyvos keitimą. Atidaryk nuorodą ir pridėk į pradžios ekraną:", iTitle:"Įdiekite programą telefone", iBtn:"Įdiegti", iLater:"Vėliau", iIos:"Spauskite „Bendrinti“, tada „Pridėti į pradžios ekraną“.", iOther:"Naršyklės meniu pasirinkite „Įdiegti programą“ arba „Pridėti į pradžios ekraną“.", lTitle:"Vairuotojo pažymėjimas", lAdd:"+ Vairuotojo pažymėjimo galiojimas", lUntil:"Galioja iki ", lLabel:"Galioja iki", lClear:"Pašalinti", mTitleLog:"Priežiūra ir išlaidos", mAdd:"Pridėti įrašą", mEdit:"Redaguoti įrašą", mTotal:"Iš viso", mEmpty:"Įrašų dar nėra. Fiksuokite remontą, alyvos keitimą ir kitas išlaidas.", mType:"Rūšis", mDate:"Data", mKm:"Rida (km)", mCost:"Kaina (€)", mNote:"Pastaba", delE:"Ištrinti", k_oil:"Alyvos keitimas", k_service:"Techninis aptarnavimas", k_repair:"Remontas", k_tyres:"Padangos", k_parts:"Dalys", k_insp:"Techninė apžiūra", k_ins:"Draudimas", k_other:"Kita", dTitle:"Dokumentai", dNote:"Dokumentai saugomi tik šiame telefone ir į atsargines kopijas neįtraukiami.", dAdd:"Pridėti dokumentą", dEmpty:"Dokumentų dar nėra. Pridėkite techpaso, draudimo ar kitų dokumentų nuotraukas ar PDF failus.", dShare:"Atidaryti / dalytis", dClose:"Uždaryti", dBig:"Failas per didelis (daugiausia 15 MB).", dErr:"Nepavyko išsaugoti dokumento.", dNoPrev:"Šio failo peržiūra nepalaikoma. Naudokite „Atidaryti / dalytis“.", dImg:"Nuotrauka", spTitle:"Paremkite projektą", spText:"Programa nemokama. Jei ji jums naudinga, galite paremti jos kūrėją.", spBtn:"Paremti", igText:"Sekite naujienas ir patarimus Instagram", sTitle:"Nustatymai", sBack:"Atgal", sLang:"Kalba", sTheme:"Išvaizda", oLight:"Šviesi", oDark:"Tamsi", aTitle:"Automatinė kopija", aBody:"Programa automatiškai išsaugo jūsų automobilių kopiją internete. Ji užšifruojama jūsų telefone, todėl paslauga jos perskaityti negali.", aOn:"Įjungta", aOff:"Išjungta", aLast:"Paskutinė automatinė kopija: ", aNone:"Kopija dar nesukurta.", aCode:"Atsarginės kopijos kodas", aCodeHelp:"Išsaugokite šį kodą saugioje vietoje, pavyzdžiui, užrašuose. Jo reikės automobiliams atkurti naujame telefone. Be kodo kopijos atkurti neįmanoma.", aRestoreT:"Atkurti naudojant kodą", aRestore:"Atkurti", aNoCopy:"Kopijos su šiuo kodu nerasta.", aErr:"Nepavyko atkurti. Patikrinkite kodą ir ryšį.", aDeleted:"Internetinė kopija ištrinta.", mTitle:"Kopija į failą", emptyHint:"Naujame telefone? Atkurkite automobilius nustatymuose.", bTitle:"Atsarginė kopija", bBody:"Išsaugokite automobilių sąrašą faile, kad galėtumėte jį atkurti naujame telefone.", bLast:"Paskutinė kopija: ", bSave:"Sukurti kopiją", bRestore:"Atkurti iš failo", bDone:"Kopija sukurta.", bReplace:"Pakeisti", bBad:"Šis failas netinka. Pasirinkite MankevCars kopijos failą.", bRestored:"Atkurta.", bFound:function(n){ return "Rasta automobilių: " + n + ". Pakeisti dabartinį sąrašą šiame telefone?"; }, nTitle:"Priminimai telefone", nBody:"Gaukite pranešimą, kai artėja techninė apžiūra ar draudimo pabaiga.", nEnable:"Įjungti priminimus", nOn:"Priminimai įjungti šiame telefone. Pranešimas ateina likus 30, 14, 7, 3 ir 1 dienai, datos dieną ir kas savaitę pavėlavus. Alyvos keitimas kol kas neįtrauktas.", nTest:"Siųsti bandomąjį", nOff:"Išjungti", nIos:"Norėdami gauti pranešimus iPhone, pridėkite programą į pradžios ekraną (Bendrinti, tada Pridėti į pradžios ekraną) ir atidarykite ją iš ten.", nDenied:"Pranešimai šiai programai užblokuoti. Leiskite juos telefono nustatymuose.", nErr:"Nepavyko įjungti priminimų. Bandykite dar kartą.", nTestMsg:"Bandomasis pranešimas išsiųstas.", nOffMsg:"Priminimai išjungti.", sw:"EN", dark:"Tamsus režimas", light:"Šviesus režimas", addS:"+ Pridėti", allF:"Visi", all:"Visi automobiliai", cars:"Automobiliai",
     Urgent:"Skubu", Soon:"Netrukus", OK:"Tvarkoje", insp:"Techninė apžiūra", ins:"Draudimas baigiasi", oil:"Alyvos keitimas",
     addCur:"Įveskite dabartinę ridą", edit:"Redaguoti", addPh:"Pridėti nuotrauką", chPh:"Keisti nuotrauką",
     det:"Automobilio duomenys", plate:"Valstybinis numeris", vin:"VIN kodas", reg:"Registracijos liudijimo (techpaso) Nr.",
@@ -188,7 +209,7 @@ var L = {
     days:function(d){ return d < 0 ? "Pavėluota " + (-d) + " d." : d === 0 ? "Šiandien" : "Po " + d + " d."; },
     over:function(n){ return "Viršyta " + n + " km"; }, left:function(n){ return "Liko " + n + " km"; },
     dueAt:function(n){ return "Keisti ties " + n + " km"; }, lastAt:function(n){ return "Paskutinį kartą ties " + n + " km"; }},
-  en: {loc:"en-GB", invTitle:"Invite a friend", invText:"Scan the QR code with a phone camera or share the link. Your friend opens it and adds the app to the Home Screen.", invShare:"Share", invMsg:"Try MankevCars – an app that reminds you about inspection, insurance and oil changes. Open the link and add it to your Home Screen:", iTitle:"Install the app on your phone", iBtn:"Install", iLater:"Later", iIos:"Tap Share, then Add to Home Screen.", iOther:"In the browser menu choose Install app or Add to Home Screen.", lTitle:"Driving licence", lAdd:"+ Driving licence expiry", lUntil:"Valid until ", lLabel:"Valid until", lClear:"Remove", mTitleLog:"Maintenance and costs", mAdd:"Add entry", mEdit:"Edit entry", mTotal:"Total", mEmpty:"No entries yet. Record repairs, oil changes and other costs.", mType:"Type", mDate:"Date", mKm:"Odometer (km)", mCost:"Cost (€)", mNote:"Note", delE:"Delete", k_oil:"Oil change", k_service:"Service", k_repair:"Repair", k_tyres:"Tyres", k_parts:"Parts", k_insp:"Inspection", k_ins:"Insurance", k_other:"Other", dTitle:"Documents", dNote:"Documents are stored on this phone only and are not included in backups.", dAdd:"Add document", dEmpty:"No documents yet. Add photos or PDFs of the registration certificate, insurance and other papers.", dShare:"Open / share", dClose:"Close", dBig:"File too large (15 MB maximum).", dErr:"Could not save the document.", dNoPrev:"This file cannot be previewed. Use Open / share.", dImg:"Photo", spTitle:"Support the project", spText:"The app is free. If it helps you, you can support its creator.", spBtn:"Support", igText:"Follow for news and tips on Instagram", sTitle:"Settings", sBack:"Back", sLang:"Language", sTheme:"Appearance", oLight:"Light", oDark:"Dark", aTitle:"Automatic backup", aBody:"The app automatically saves a copy of your cars online. It is encrypted on your phone, so the service cannot read it.", aOn:"On", aOff:"Off", aLast:"Last automatic backup: ", aNone:"No backup yet.", aCode:"Backup code", aCodeHelp:"Save this code somewhere safe, for example in your notes. You need it to restore your cars on a new phone. Without it the copy cannot be restored.", aRestoreT:"Restore with a code", aRestore:"Restore", aNoCopy:"No backup found for this code.", aErr:"Could not restore. Check the code and your connection.", aDeleted:"Online copy deleted.", mTitle:"Backup to a file", emptyHint:"New phone? Restore your cars in Settings.", bTitle:"Backup", bBody:"Save your cars to a file so you can restore them on a new phone.", bLast:"Last backup: ", bSave:"Back up", bRestore:"Restore from file", bDone:"Backup created.", bReplace:"Replace", bBad:"This file does not work. Choose a MankevCars backup file.", bRestored:"Restored.", bFound:function(n){ return "Found " + n + (n === 1 ? " car" : " cars") + ". Replace the list on this phone?"; }, nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
+  en: {loc:"en-GB", shBtn:"Share car info", shTitle:"Share car info", shText:"We create a code. Another user enters it in the app and gets this car's details, so nothing has to be retyped. Documents are never shared.", shPhoto:"Include photo", shLog:"Include maintenance history and costs", shCreate:"Create code", shValid:"The code is valid for 3 days. The data is encrypted and only someone with the code can read it.", shErr:"Could not create the code. Check your connection.", shMsg:function(c){ return "I am sharing a car with you in MankevCars. Open the app, tap + Add car, choose Have a code from another user, and enter the code " + c + " (valid for 3 days). App: "; }, impSum:"Have a code from another user?", impText:"Enter the code to fill in the car details automatically.", impBtn:"Get details", impBad:"The code has 12 characters.", impNone:"Code not found or expired.", impBad2:"Could not get the details. Check the code and your connection.", impOk:"Details filled in. Review them and save.", invTitle:"Invite a friend", invText:"Scan the QR code with a phone camera or share the link. Your friend opens it and adds the app to the Home Screen.", invShare:"Share", invMsg:"Try MankevCars – an app that reminds you about inspection, insurance and oil changes. Open the link and add it to your Home Screen:", iTitle:"Install the app on your phone", iBtn:"Install", iLater:"Later", iIos:"Tap Share, then Add to Home Screen.", iOther:"In the browser menu choose Install app or Add to Home Screen.", lTitle:"Driving licence", lAdd:"+ Driving licence expiry", lUntil:"Valid until ", lLabel:"Valid until", lClear:"Remove", mTitleLog:"Maintenance and costs", mAdd:"Add entry", mEdit:"Edit entry", mTotal:"Total", mEmpty:"No entries yet. Record repairs, oil changes and other costs.", mType:"Type", mDate:"Date", mKm:"Odometer (km)", mCost:"Cost (€)", mNote:"Note", delE:"Delete", k_oil:"Oil change", k_service:"Service", k_repair:"Repair", k_tyres:"Tyres", k_parts:"Parts", k_insp:"Inspection", k_ins:"Insurance", k_other:"Other", dTitle:"Documents", dNote:"Documents are stored on this phone only and are not included in backups.", dAdd:"Add document", dEmpty:"No documents yet. Add photos or PDFs of the registration certificate, insurance and other papers.", dShare:"Open / share", dClose:"Close", dBig:"File too large (15 MB maximum).", dErr:"Could not save the document.", dNoPrev:"This file cannot be previewed. Use Open / share.", dImg:"Photo", spTitle:"Support the project", spText:"The app is free. If it helps you, you can support its creator.", spBtn:"Support", igText:"Follow for news and tips on Instagram", sTitle:"Settings", sBack:"Back", sLang:"Language", sTheme:"Appearance", oLight:"Light", oDark:"Dark", aTitle:"Automatic backup", aBody:"The app automatically saves a copy of your cars online. It is encrypted on your phone, so the service cannot read it.", aOn:"On", aOff:"Off", aLast:"Last automatic backup: ", aNone:"No backup yet.", aCode:"Backup code", aCodeHelp:"Save this code somewhere safe, for example in your notes. You need it to restore your cars on a new phone. Without it the copy cannot be restored.", aRestoreT:"Restore with a code", aRestore:"Restore", aNoCopy:"No backup found for this code.", aErr:"Could not restore. Check the code and your connection.", aDeleted:"Online copy deleted.", mTitle:"Backup to a file", emptyHint:"New phone? Restore your cars in Settings.", bTitle:"Backup", bBody:"Save your cars to a file so you can restore them on a new phone.", bLast:"Last backup: ", bSave:"Back up", bRestore:"Restore from file", bDone:"Backup created.", bReplace:"Replace", bBad:"This file does not work. Choose a MankevCars backup file.", bRestored:"Restored.", bFound:function(n){ return "Found " + n + (n === 1 ? " car" : " cars") + ". Replace the list on this phone?"; }, nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
     Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
     addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
     det:"Vehicle details", plate:"Number plate", vin:"VIN code", reg:"Registration certificate no.",
@@ -643,6 +664,52 @@ function installAct(a){
   try { localStorage.setItem(INK, "1"); } catch (e) {}
   render();
 }
+var incoming = null, codeBox = document.getElementById("codeBox");
+var SHICON = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:6px"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
+var sdlg = document.getElementById("sdlg"), shOut = document.getElementById("shOut"), shGo = document.getElementById("shGo");
+function newShareCode(){
+  var A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = crypto.getRandomValues(new Uint8Array(12)), o = "";
+  for (var i = 0; i < 12; i++) { o += A[r[i] % 32]; if (i % 4 === 3 && i < 11) o += "-"; }
+  return o;
+}
+function openShare(){ shOut.innerHTML = ""; shGo.style.display = ""; shGo.disabled = false; sdlg.showModal(); }
+document.getElementById("shClose").onclick = function(){ sdlg.close(); };
+shGo.onclick = async function(){
+  var c = getCar(tab), s = T(); if (!c) return;
+  shGo.disabled = true;
+  try {
+    var code = newShareCode(), car = {name: c.name, plate: c.plate, vin: c.vin, reg: c.reg, insp: c.insp, ins: c.ins, oilKm: c.oilKm, km: c.km, int: c.int};
+    if (document.getElementById("shPhoto").checked && c.photo) car.photo = c.photo;
+    if (document.getElementById("shLog").checked && c.log) car.log = c.log;
+    var r = await seal(code, {app: "MankevCars", v: 1, kind: "car", car: car});
+    if (r.body.length > 1.4e6) { delete car.photo; r = await seal(code, {app: "MankevCars", v: 1, kind: "car", car: car}); }
+    var res = await fetch(API + "/s/" + r.id, {method: "POST", headers: {"Content-Type": "text/plain"}, body: r.body});
+    if (!res.ok) throw 0;
+    shOut.innerHTML = '<div class="shcode">' + code + '</div><p class="lb">' + s.shValid + '</p><div class="row" style="justify-content:flex-start"><button type="button" class="primary" id="shShare">' + s.invShare + '</button><button type="button" class="ghost" id="shCopy">' + s.copy + '</button></div>';
+    shGo.style.display = "none";
+    document.getElementById("shCopy").onclick = function(){ copyText(code, this); };
+    document.getElementById("shShare").onclick = function(){
+      if (navigator.share) navigator.share({title: "MankevCars", text: s.shMsg(code) + APP_URL}).catch(function(){}); else copyText(s.shMsg(code) + APP_URL, this);
+    };
+  } catch (e) { shOut.innerHTML = '<p><b>' + s.shErr + '</b></p>'; }
+  shGo.disabled = false;
+};
+document.getElementById("impGo").onclick = async function(){
+  var s = T(), out = document.getElementById("impMsg"), code = norm(document.getElementById("impCode").value);
+  if (code.length !== 12) { out.textContent = s.impBad; return; }
+  try {
+    var o = await keysFor(code), r = await fetch(API + "/s/" + o.id);
+    if (r.status === 404) { out.textContent = s.impNone; return; }
+    var d = await unseal(code, await r.text()), x = clean(d.car, 0);
+    if (d.app !== "MankevCars" || d.kind !== "car" || !x) throw 0;
+    f.name.value = x.name; f.plate.value = x.plate; f.vin.value = x.vin; f.reg.value = x.reg; f.insp.value = x.insp; f.ins.value = x.ins;
+    f.oilKm.value = x.oilKm != null ? x.oilKm : ""; f.km.value = x.km != null ? x.km : ""; f.int.value = x.int || 15000;
+    incoming = {photo: x.photo, log: x.log}; out.textContent = s.impOk;
+  } catch (e) { out.textContent = s.impBad2; }
+};
+["gesturestart", "gesturechange", "gestureend"].forEach(function(ev){ document.addEventListener(ev, function(e){ e.preventDefault(); }); });
+document.addEventListener("touchmove", function(e){ if (e.touches.length > 1) e.preventDefault(); }, {passive: false});
+document.addEventListener("wheel", function(e){ if (e.ctrlKey) e.preventDefault(); }, {passive: false});
 var dlg = document.getElementById("dlg"), f = document.getElementById("f"), delBtn = document.getElementById("del"), pf = document.getElementById("pf"), msg = document.getElementById("msg");
 var addBtn = document.getElementById("add"), themeBtn = document.getElementById("theme"), langBtn = document.getElementById("lang"), root = document.documentElement;
 
@@ -667,7 +734,7 @@ function render(){
   } else {
     var c = getCar(tab);
     v.innerHTML = '<div class="hero">' + (c.photo ? '<img alt="" src="' + c.photo + '">' : svg()) + '</div>' +
-      '<div class="carhead"><div class="id"><h2>' + esc(c.name) + '</h2>' + plateHtml(c.plate) + '</div><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
+      '<div class="carhead"><div class="id"><h2>' + esc(c.name) + '</h2>' + plateHtml(c.plate) + '</div><div class="acts"><button class="ghost" data-act="photo">' + (c.photo ? s.chPh : s.addPh) + '</button><button class="ghost" data-act="share">' + SHICON + s.shBtn + '</button><button class="ghost" data-act="edit">' + s.edit + '</button></div></div>' +
       it.filter(function(i){ return i.c.id === c.id; }).map(function(i){ return row(i, false); }).join("") + details(c) + logHtml(c) + docsHtml(c);
   }
 }
@@ -696,6 +763,7 @@ function edit(id){
   f.name.value = c.name || ""; f.plate.value = c.plate || ""; f.vin.value = c.vin || ""; f.reg.value = c.reg || "";
   f.insp.value = c.insp || ""; f.ins.value = c.ins || "";
   f.oilKm.value = c.oilKm != null ? c.oilKm : ""; f.km.value = c.km != null ? c.km : ""; f.int.value = c.int || 15000;
+  incoming = null; document.getElementById("impMsg").textContent = ""; document.getElementById("impCode").value = ""; codeBox.open = false; codeBox.style.display = cur ? "none" : "";
   dlg.showModal();
 }
 function flash(b, k){ b.textContent = T()[k]; setTimeout(function(){ b.textContent = T().copy; }, 1300); }
@@ -724,7 +792,7 @@ document.getElementById("view").onclick = function(e){
     return;
   }
   var a = e.target.closest("[data-act]");
-  if (a) { if (a.dataset.act === "edit") edit(tab); else pf.click(); return; }
+  if (a) { if (a.dataset.act === "edit") edit(tab); else if (a.dataset.act === "share") openShare(); else pf.click(); return; }
   var b = e.target.closest("button.card"); if (b) { tab = Number(b.dataset.id); render(); window.scrollTo(0, 0); }
 };
 pf.onchange = function(){
@@ -751,8 +819,8 @@ delBtn.onclick = function(){
 f.onsubmit = function(e){
   e.preventDefault();
   var num = function(v){ return v === "" ? null : Number(v); }, up = function(el){ return el.value.trim().toUpperCase(); }, old = getCar(cur) || {};
-  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo, log: old.log};
-  if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; }
+  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo || (incoming && incoming.photo) || undefined, log: old.log || (incoming && incoming.log) || undefined};
+  if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; incoming = null; }
   save(); render(); dlg.close();
 };
 
