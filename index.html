@@ -213,6 +213,8 @@ details.fold{overflow:hidden}
 .fold .fb p.cheer{color:var(--text);font-weight:700;min-height:1.4em}
 .bell h3+.opts+h3{margin-top:6px}
 .odo{display:flex;margin-top:10px}
+.pr{color:var(--muted);font-size:.8rem;font-weight:600}
+.sbp{width:100%;border-radius:12px;border:1px solid var(--line);margin-top:8px}
 </style>
 </head>
 <body>
@@ -279,6 +281,13 @@ details.fold{overflow:hidden}
   <p class="lb" id="odoErr" style="color:var(--red);font-weight:700"></p>
   <div class="row"><button type="button" class="ghost" id="ocancel" data-i="cancel"></button><button type="submit" class="primary" data-i="save"></button></div></form></dialog>
 
+<dialog id="bdlg"><h2 data-i="sbTitle"></h2><p class="lb" data-i="sbText"></p>
+  <label class="chk"><input type="checkbox" id="sbCosts" checked><span data-i="sbCosts"></span></label>
+  <label class="chk"><input type="checkbox" id="sbReg"><span data-i="sbReg"></span></label>
+  <label class="chk"><input type="checkbox" id="sbPhoto" checked><span data-i="shPhoto"></span></label>
+  <div id="sbOut"></div>
+  <div class="row"><button type="button" class="ghost" id="sbClose" data-i="dClose"></button><button type="button" class="primary" id="sbGo" data-i="sbMake"></button></div></dialog>
+
 <script>
 var KEY = "mankevCars.v1", TKEY = "mankevCars.theme", GKEY = "mankevCars.lang", MAX = 10;
 var mem = null, cur = null, armed = false, tab = "all", filt = "all", lang = "lt";
@@ -302,7 +311,9 @@ var L = {
     fbStart:{idea:"Norėčiau, kad programa ", bug:"Kažkas neveikia: ", praise:"Man patinka, kad "}, fbThanks:"Ačiū! Jūs ką tik padarėte MankevCars geresnę.", fbThanks2:"Žinutė jau pas kūrėją.",
     spTitle:"Pavaišinkite kūrėją kava", spText:"MankevCars nemokama ir be reklamų. Jei ji padeda nepamiršti apžiūros, kava padės kurti toliau.", spBtn:"Pavaišinti kava",
     nShort:"Pranešimai: likus 30, 14, 7, 3, 1 d. ir datos dieną.", bkSaveCode:"Išsaugokite atsarginį kodą!", stNote:"Anoniminė statistika: programa kartą per dieną praneša, kad buvo atidaryta, be vardų ir jūsų duomenų.",
-    lPhNote:"Nuotraukos saugomos tik šiame telefone ir į atsargines kopijas neįtraukiamos.", lSide_front:"Priekis", lSide_back:"Galas", lAddPh:"Pridėti", lChange:"Keisti", invSub:"QR kodas ir nuoroda draugams", fbSub:"Pasakykite, ką pagerinti, užtrunka minutę", odoBtn:"Atnaujinti ridą", odoTitle:"Atnaujinti ridą", odoLabel:"Dabartinė rida (km)", odoInfo:function(k, d){ return (k ? "Dabartinė rida: " + nf(k) + " km. " : "") + (d ? "Alyvą keisti ties " + nf(d) + " km." : ""); }, odoLow:function(k){ return "Rida mažesnė nei ankstesnė (" + k + " km). Patikrinkite skaičių."; }},
+    lPhNote:"Nuotraukos saugomos tik šiame telefone ir į atsargines kopijas neįtraukiamos.", lSide_front:"Priekis", lSide_back:"Galas", lAddPh:"Pridėti", lChange:"Keisti", invSub:"QR kodas ir nuoroda draugams", fbSub:"Pasakykite, ką pagerinti, užtrunka minutę", odoBtn:"Atnaujinti ridą", odoTitle:"Atnaujinti ridą", odoLabel:"Dabartinė rida (km)", odoInfo:function(k, d){ return (k ? "Dabartinė rida: " + nf(k) + " km. " : "") + (d ? "Alyvą keisti ties " + nf(d) + " km." : ""); }, odoLow:function(k){ return "Rida mažesnė nei ankstesnė (" + k + " km). Patikrinkite skaičių."; },
+    predLbl:"Prognozė: ~ ", predStale:"Atnaujinkite ridą, kad prognozė būtų tiksli.", predWait:"Atnaujinkite ridą po kelių savaičių, ir čia pasirodys prognozuojama alyvos keitimo data.",
+    sbBtn:"Techninė knyga (PDF)", sbTitle:"Techninė knyga", sbText:"Sukurkite tvarkingą PDF su automobilio duomenimis ir visa priežiūros istorija, kurį galite parodyti pirkėjui.", sbCosts:"Rodyti kainas", sbReg:"Rodyti registracijos liudijimo (techpaso) numerį", sbMake:"Sukurti PDF", sbBusy:"Kuriama...", sbShare:"Dalytis / išsaugoti PDF", sbPages:"psl.", sbErr:"Nepavyko sukurti PDF.", sbMade:"sudaryta", sbOdo:"Rida", sbInsp:"Techninė apžiūra iki", sbEntries:"Įrašų skaičius", sbEmpty:"Priežiūros įrašų nėra.", sbNote:"Dokumentas sudarytas iš pardavėjo programoje įvestų duomenų."},
   en: {loc:"en-GB", fbTitle:"Feedback", fbText:"Tell us what you like and what to improve. Your message goes to the app creator. Only your phone type (Android or iPhone) is sent with it.", fbIdea:"Idea", fbBug:"Problem", fbPraise:"Praise", fbPh:"Your message", fbContact:"Contact for a reply (optional)", fbSend:"Send", fbThanks:"Thank you! Your feedback was sent.", fbAgain:"Write another", fbEmpty:"Please write a message.", fbErr:"Could not send. Try again later.", shBtn:"Share car info", shTitle:"Share car info", shText:"We create a code. Another user enters it in the app and gets this car's details, so nothing has to be retyped. Documents are never shared.", shPhoto:"Include photo", shLog:"Include maintenance history and costs", shCreate:"Create code", shValid:"The code is valid for 3 days. The data is encrypted and only someone with the code can read it.", shErr:"Could not create the code. Check your connection.", shMsg:function(c){ return "I am sharing a car with you in MankevCars. Open the app, tap + Add car, choose Have a code from another user, and enter the code " + c + " (valid for 3 days). App: "; }, impSum:"Have a code from another user?", impText:"Enter the code to fill in the car details automatically.", impBtn:"Get details", impBad:"The code has 12 characters.", impNone:"Code not found or expired.", impBad2:"Could not get the details. Check the code and your connection.", impOk:"Details filled in. Review them and save.", invTitle:"Invite a friend", invText:"Scan the QR code with a phone camera or share the link. Your friend opens it and adds the app to the Home Screen.", invShare:"Share", invMsg:"Try MankevCars – an app that reminds you about inspection, insurance and oil changes. Open the link and add it to your Home Screen:", iTitle:"Install the app on your phone", iBtn:"Install", iLater:"Later", iIos:"Tap Share, then Add to Home Screen.", iOther:"In the browser menu choose Install app or Add to Home Screen.", lTitle:"Driving licence", lAdd:"+ Driving licence expiry", lUntil:"Valid until ", lLabel:"Valid until", lClear:"Remove", mTitleLog:"Maintenance and costs", mAdd:"Add entry", mEdit:"Edit entry", mTotal:"Total", mEmpty:"No entries yet. Record repairs, oil changes and other costs.", mType:"Type", mDate:"Date", mKm:"Odometer (km)", mCost:"Cost (€)", mNote:"Note", delE:"Delete", k_oil:"Oil change", k_service:"Service", k_repair:"Repair", k_tyres:"Tyres", k_parts:"Parts", k_insp:"Inspection", k_ins:"Insurance", k_other:"Other", dTitle:"Documents", dNote:"Documents are stored on this phone only and are not included in backups.", dAdd:"Add document", dEmpty:"No documents yet. Add photos or PDFs of the registration certificate, insurance and other papers.", dShare:"Open / share", dClose:"Close", dBig:"File too large (15 MB maximum).", dErr:"Could not save the document.", dNoPrev:"This file cannot be previewed. Use Open / share.", dImg:"Photo", spTitle:"Support the project", spText:"The app is free. If it helps you, you can support its creator.", spBtn:"Support", igText:"Follow for news and tips on Instagram", sTitle:"Settings", sBack:"Back", sLang:"Language", sTheme:"Appearance", oLight:"Light", oDark:"Dark", aTitle:"Automatic backup", aBody:"The app automatically saves a copy of your cars online. It is encrypted on your phone, so the service cannot read it.", aOn:"On", aOff:"Off", aLast:"Last automatic backup: ", aNone:"No backup yet.", aCode:"Backup code", aCodeHelp:"Save this code somewhere safe, for example in your notes. You need it to restore your cars on a new phone. Without it the copy cannot be restored.", aRestoreT:"Restore with a code", aRestore:"Restore", aNoCopy:"No backup found for this code.", aErr:"Could not restore. Check the code and your connection.", aDeleted:"Online copy deleted.", mTitle:"Backup to a file", emptyHint:"New phone? Restore your cars in Settings.", bTitle:"Backup", bBody:"Save your cars to a file so you can restore them on a new phone.", bLast:"Last backup: ", bSave:"Back up", bRestore:"Restore from file", bDone:"Backup created.", bReplace:"Replace", bBad:"This file does not work. Choose a MankevCars backup file.", bRestored:"Restored.", bFound:function(n){ return "Found " + n + (n === 1 ? " car" : " cars") + ". Replace the list on this phone?"; }, nTitle:"Phone reminders", nBody:"Get a notification when an inspection or insurance date is near.", nEnable:"Turn on reminders", nOn:"Reminders are on for this phone. You get a notification 30, 14, 7, 3 and 1 days before a date, on the day, and weekly when overdue. Oil changes are not included yet.", nTest:"Send test", nOff:"Turn off", nIos:"To get notifications on iPhone, add the app to your Home Screen (Share, then Add to Home Screen) and open it from there.", nDenied:"Notifications are blocked for this app. Allow them in your phone settings.", nErr:"Could not turn on reminders. Try again.", nTestMsg:"Test notification sent.", nOffMsg:"Reminders turned off.", sw:"LT", dark:"Dark mode", light:"Light mode", addS:"+ Add car", allF:"All", all:"All cars", cars:"Cars",
     Urgent:"Urgent", Soon:"Soon", OK:"OK", insp:"Technical inspection", ins:"Insurance expires", oil:"Oil change",
     addCur:"Add current km", edit:"Edit car", addPh:"Add photo", chPh:"Change photo",
@@ -322,7 +333,9 @@ var L = {
     fbStart:{idea:"I wish the app ", bug:"Something is not working: ", praise:"I love that "}, fbThanks:"Thank you! You just made MankevCars better.", fbThanks2:"Your message is already with the creator.",
     spTitle:"Buy the creator a coffee", spText:"MankevCars is free and ad-free. If it helps you remember your inspection, a coffee helps it keep growing.", spBtn:"Buy a coffee",
     nShort:"Alerts: 30, 14, 7, 3 and 1 days before, and on the day.", bkSaveCode:"Save your backup code!", stNote:"Anonymous statistics: once a day the app reports that it was opened, with no names or personal data.",
-    lPhNote:"Photos are stored on this phone only and are not included in backups.", lSide_front:"Front", lSide_back:"Back", lAddPh:"Add", lChange:"Change", invSub:"QR code and link for friends", fbSub:"Tell us what to improve, it takes a minute", odoBtn:"Update odometer", odoTitle:"Update odometer", odoLabel:"Current odometer (km)", odoInfo:function(k, d){ return (k ? "Current reading: " + nf(k) + " km. " : "") + (d ? "Oil change due at " + nf(d) + " km." : ""); }, odoLow:function(k){ return "That is lower than the last reading (" + k + " km). Please check the number."; }}
+    lPhNote:"Photos are stored on this phone only and are not included in backups.", lSide_front:"Front", lSide_back:"Back", lAddPh:"Add", lChange:"Change", invSub:"QR code and link for friends", fbSub:"Tell us what to improve, it takes a minute", odoBtn:"Update odometer", odoTitle:"Update odometer", odoLabel:"Current odometer (km)", odoInfo:function(k, d){ return (k ? "Current reading: " + nf(k) + " km. " : "") + (d ? "Oil change due at " + nf(d) + " km." : ""); }, odoLow:function(k){ return "That is lower than the last reading (" + k + " km). Please check the number."; },
+    predLbl:"Estimate: ~ ", predStale:"Update the odometer to keep the estimate accurate.", predWait:"Update the odometer again in a few weeks and an estimated oil change date will appear here.",
+    sbBtn:"Service book (PDF)", sbTitle:"Service book", sbText:"Create a tidy PDF with the car's details and full maintenance history to show a buyer.", sbCosts:"Show costs", sbReg:"Show registration certificate number", sbMake:"Create PDF", sbBusy:"Creating...", sbShare:"Share / save PDF", sbPages:"page(s)", sbErr:"Could not create the PDF.", sbMade:"created", sbOdo:"Odometer", sbInsp:"Inspection valid until", sbEntries:"Entries", sbEmpty:"No maintenance entries.", sbNote:"Prepared from data entered by the seller in the app."}
 };
 function T(){ return L[lang]; }
 function load(){
@@ -358,8 +371,9 @@ function items(){
     });
     if (c.oilKm != null && c.oilKm !== "") {
       if (c.km) {
-        var due = c.oilKm + (c.int || 15000), left = due - c.km;
-        out.push({c:c, k:"oil", label:s.oil, st:left <= 0 ? "red" : left <= 1500 ? "yellow" : "green", key:left/40, txt:left <= 0 ? s.over(nf(-left)) : s.left(nf(left)), sub:s.dueAt(nf(due))});
+        var due = c.oilKm + (c.int || 15000), left = due - c.km, pr = predictOil(c), st = left <= 0 ? "red" : left <= 1500 ? "yellow" : "green";
+        if (pr && pr.date) { if (pr.left <= 7) st = "red"; else if (pr.left <= 30 && st === "green") st = "yellow"; }
+        out.push({c:c, k:"oil", label:s.oil, st:st, key:pr && pr.date ? pr.left : left/40, txt:left <= 0 ? s.over(nf(-left)) : s.left(nf(left)), sub:s.dueAt(nf(due)), pr:pr});
       } else {
         out.push({c:c, k:"oil", label:s.oil, st:"yellow", key:9999, txt:s.addCur, sub:s.lastAt(nf(c.oilKm))});
       }
@@ -372,7 +386,7 @@ function plateHtml(p){ return p ? '<span class="plate"><i>LT</i><span>' + esc(p)
 function row(i, withName){
   var tag = withName ? "button" : "div";
   var txt = withName ? '<span class="nm">' + esc(i.c.name) + '</span><span class="lb t-' + i.k + '">' + i.label + (i.c.plate ? " – " + esc(i.c.plate) : "") + '</span>' : '<span class="nm t-' + i.k + '">' + i.label + '</span>';
-  return '<' + tag + ' class="card ' + i.st + '" data-id="' + i.c.id + '"><span class="ci"><span class="ico t-' + i.k + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[i.k] + '</svg></span><span class="tt">' + txt + '</span><span class="pill">' + T()[WORD[i.st]] + '</span></span><span class="cf"><span class="tx">' + i.txt + '</span><span class="dt">' + i.sub + '</span></span>' + (!withName && i.k === "oil" ? '<span class="odo"><button type="button" class="ghost cp" data-odo="1">' + T().odoBtn + '</button></span>' : '') + '</' + tag + '>';
+  return '<' + tag + ' class="card ' + i.st + '" data-id="' + i.c.id + '"><span class="ci"><span class="ico t-' + i.k + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[i.k] + '</svg></span><span class="tt">' + txt + '</span><span class="pill">' + T()[WORD[i.st]] + '</span></span><span class="cf"><span class="tx">' + i.txt + '</span><span class="dt">' + i.sub + predHtml(i.pr, !withName) + '</span></span>' + (!withName && i.k === "oil" ? '<span class="odo"><button type="button" class="ghost cp" data-odo="1">' + T().odoBtn + '</button></span>' : '') + '</' + tag + '>';
 }
 function details(c){
   var s = T(), rows = [["plate", s.plate, c.plate], ["vin", s.vin, c.vin], ["reg", s.reg, c.reg]];
@@ -394,7 +408,7 @@ function getSub(){ return navigator.serviceWorker.ready.then(function(r){ return
 function syncPush(){
   if (pushState !== "on") return;
   getSub().then(function(sub){
-    if (sub) post("/sync", {endpoint:sub.endpoint, lang:lang, l:getLic(), cars:cars.map(function(c){ return {n:short(c.name), i:c.insp, s:c.ins}; })});
+    if (sub) post("/sync", {endpoint:sub.endpoint, lang:lang, l:getLic(), cars:cars.map(function(c){ return {n:short(c.name), i:c.insp, s:c.ins, o:oilPushDate(c)}; })});
   }).catch(function(){});
 }
 function refreshPush(){
@@ -451,7 +465,8 @@ function clean(c, i){
     if (!e || !d(e.d)) return null;
     return {id: (typeof e.id === "number" && isFinite(e.id)) ? e.id : Date.now() + 1000 + j, d: e.d, k: KT.indexOf(e.k) >= 0 ? e.k : "other", km: n(e.km), c: n(e.c), t: t(e.t, 80)};
   }).filter(Boolean);
-  return {id: (typeof c.id === "number" && isFinite(c.id)) ? c.id : Date.now() + i, name: c.name.trim().slice(0, 60), plate: t(c.plate, 10), vin: t(c.vin, 17), reg: t(c.reg, 20), insp: d(c.insp), ins: d(c.ins), oilKm: n(c.oilKm), km: n(c.km), int: n(c.int) || 15000, photo: ph, log: lg};
+  var od = (Array.isArray(c.odo) ? c.odo : []).slice(-60).filter(function(x){ return x && d(x.d) && typeof x.km === "number" && isFinite(x.km); }).map(function(x){ return {d: x.d, km: x.km}; });
+  return {id: (typeof c.id === "number" && isFinite(c.id)) ? c.id : Date.now() + i, name: c.name.trim().slice(0, 60), plate: t(c.plate, 10), vin: t(c.vin, 17), reg: t(c.reg, 20), insp: d(c.insp), ins: d(c.ins), oilKm: n(c.oilKm), km: n(c.km), int: n(c.int) || 15000, photo: ph, log: lg, odo: od};
 }
 function doBackup(){
   var name = "mankevcars-backup-" + dayStr() + ".json";
@@ -613,7 +628,7 @@ function logHtml(c){
   }).join("");
   return '<div class="card dc"><h3>' + s.mTitleLog + '</h3>' +
     (log.length ? '<div class="sum2"><span><small>' + s.mTotal + '</small><b>' + eur(tot) + '</b></span><span><small>' + y + '</small><b>' + eur(yr) + '</b></span></div>' + rows : '<p class="lb">' + s.mEmpty + '</p>') +
-    '<div class="row" style="justify-content:flex-start"><button class="primary" data-log="new">' + s.mAdd + '</button></div></div>';
+    '<div class="row" style="justify-content:flex-start"><button class="primary" data-log="new">' + s.mAdd + '</button><button class="ghost" data-sb="1">' + s.sbBtn + '</button></div></div>';
 }
 var mdlg = document.getElementById("mdlg"), mf = document.getElementById("mf"), mdel = document.getElementById("mdel");
 function openLog(id){
@@ -891,20 +906,182 @@ function maybePing(){
   post("/ping", {n: seen ? 0 : 1}).then(function(r){ if (r.ok) { try { localStorage.setItem("mankevCars.pingDay", day); localStorage.setItem("mankevCars.seen", "1"); } catch (e) {} } }).catch(function(){});
 }
 document.addEventListener("visibilitychange", function(){ if (!document.hidden) maybePing(); });
-var APP_VER = "3.2";
+var APP_VER = "3.3";
+// dialogs open without grabbing focus, so no keyboard or calendar pops up until a field is tapped
+(function(){
+  var sm = HTMLDialogElement.prototype.showModal;
+  HTMLDialogElement.prototype.showModal = function(){
+    sm.call(this);
+    var a = document.activeElement;
+    if (a && this.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur();
+  };
+  document.querySelectorAll("dialog h2").forEach(function(h){ h.tabIndex = -1; h.setAttribute("autofocus", ""); h.style.outline = "none"; });
+})();
+function dateOf(x){ var p = x.split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+function addOdo(c, d, km){
+  if (km == null || !isFinite(km)) return;
+  c.odo = (c.odo || []).filter(function(x){ return x.d !== d; });
+  c.odo.push({d: d, km: km});
+  c.odo.sort(function(a, b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  if (c.odo.length > 60) c.odo = c.odo.slice(-60);
+}
+function readings(c){
+  var r = (c.odo || []).slice();
+  (c.log || []).forEach(function(e){ if (e.km && e.d) r.push({d: e.d, km: e.km}); });
+  return r.sort(function(a, b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : a.km - b.km; });
+}
+function predictOil(c){
+  if (c.oilKm == null || c.oilKm === "") return null;
+  var due = c.oilKm + (c.int || 15000), r = readings(c);
+  if (r.length < 2) return {wait: true};
+  var t0 = new Date(); t0.setHours(0, 0, 0, 0);
+  var cut = new Date(t0); cut.setDate(cut.getDate() - 365);
+  var cutS = cut.toLocaleDateString("en-CA"), win = r.filter(function(x){ return x.d >= cutS; });
+  if (win.length < 2) win = r.slice(-2);
+  var a = win[0], b = win[win.length - 1], span = (dateOf(b.d) - dateOf(a.d)) / 864e5, diff = b.km - a.km;
+  if (span < 14 || diff <= 0 || diff / span > 1500) return {wait: true};
+  var rate = diff / span, dt = dateOf(b.d); dt.setDate(dt.getDate() + Math.round((due - b.km) / rate));
+  var iso = dt.toLocaleDateString("en-CA"), age = Math.round((t0 - dateOf(b.d)) / 864e5);
+  return {date: iso, left: daysTo(iso), rate: Math.round(rate), stale: age > 45, age: age};
+}
+function oilPushDate(c){ var p = predictOil(c); return p && p.date && !p.stale ? p.date : ""; }
+function predHtml(pr, full){
+  var s = T();
+  if (!pr) return "";
+  if (pr.date) return '<br><span class="pr">' + s.predLbl + fmt(pr.date) + (pr.stale && full ? '<br>' + s.predStale : '') + '</span>';
+  return full ? '<br><span class="pr">' + s.predWait + '</span>' : '';
+}
+
+function loadImg(src){ return new Promise(function(res){ var im = new Image(); im.onload = function(){ res(im); }; im.onerror = function(){ res(null); }; im.src = src; }); }
+function wrapTxt(g, text, maxW){
+  var out = [], line = "";
+  String(text || "").split(/\s+/).forEach(function(w){
+    while (g.measureText(w).width > maxW && w.length > 1) {
+      var k = w.length; while (k > 1 && g.measureText(w.slice(0, k)).width > maxW) k--;
+      if (line) { out.push(line); line = ""; }
+      out.push(w.slice(0, k)); w = w.slice(k);
+    }
+    var t = line ? line + " " + w : w;
+    if (line && g.measureText(t).width > maxW) { out.push(line); line = w; } else line = t;
+  });
+  if (line) out.push(line);
+  return out.length ? out : [""];
+}
+function pdfFrom(jp, w, h){
+  var enc = new TextEncoder(), parts = [], offs = [], len = 0, n = jp.length, i;
+  function add(x){ var b = typeof x === "string" ? enc.encode(x) : x; parts.push(b); len += b.length; }
+  add("%PDF-1.4\n");
+  offs[1] = len; add("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+  var kids = []; for (i = 0; i < n; i++) kids.push((3 + i * 3) + " 0 R");
+  offs[2] = len; add("2 0 obj\n<< /Type /Pages /Kids [" + kids.join(" ") + "] /Count " + n + " >>\nendobj\n");
+  for (i = 0; i < n; i++) {
+    var p = 3 + i * 3, c = p + 1, im = p + 2, cs = "q 595.28 0 0 841.89 0 0 cm /Im0 Do Q";
+    offs[p] = len; add(p + " 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 " + im + " 0 R >> >> /Contents " + c + " 0 R >>\nendobj\n");
+    offs[c] = len; add(c + " 0 obj\n<< /Length " + cs.length + " >>\nstream\n" + cs + "\nendstream\nendobj\n");
+    offs[im] = len; add(im + " 0 obj\n<< /Type /XObject /Subtype /Image /Width " + w + " /Height " + h + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + jp[i].length + " >>\nstream\n"); add(jp[i]); add("\nendstream\nendobj\n");
+  }
+  var total = 3 + n * 3, xr = len, x = "xref\n0 " + total + "\n0000000000 65535 f \n";
+  for (i = 1; i < total; i++) x += ("0000000000" + offs[i]).slice(-10) + " 00000 n \n";
+  add(x + "trailer\n<< /Size " + total + " /Root 1 0 R >>\nstartxref\n" + xr + "\n%%EOF");
+  return new Blob(parts, {type: "application/pdf"});
+}
+async function renderBook(c, o){
+  var s = T(), W = 1240, H = 1754, M = 90, F = '"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif', pages = [], cv, g, y;
+  try { await document.fonts.load("800 40px Manrope"); await document.fonts.load("500 28px Manrope"); } catch (e) {}
+  var log = (c.log || []).slice().sort(function(a, b){ return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+  var photo = o.photo && c.photo ? await loadImg(c.photo) : null;
+  function font(w, px){ g.font = w + " " + px + "px " + F; }
+  function txt(t, x, yy, w, px, col, al){ font(w, px); g.fillStyle = col; g.textAlign = al || "left"; g.fillText(t, x, yy); }
+  function newPage(){ cv = document.createElement("canvas"); cv.width = W; cv.height = H; g = cv.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, W, H); pages.push(cv); y = M; }
+  newPage();
+  g.fillStyle = "#0b5d73"; g.fillRect(0, 0, W, 150);
+  txt(s.sbTitle, M, 96, 800, 56, "#fff"); txt("MankevCars", W - M, 96, 700, 32, "rgba(255,255,255,.85)", "right");
+  y = 220; font(800, 52);
+  wrapTxt(g, c.name, photo ? W - 2 * M - 420 : W - 2 * M).forEach(function(l){ txt(l, M, y, 800, 52, "#0f1e24"); y += 64; });
+  if (c.plate) {
+    font(800, 36); var pw = g.measureText(c.plate).width + 36;
+    g.fillStyle = "#fff"; g.fillRect(M, y - 10, 52 + pw, 60); g.strokeStyle = "#15191c"; g.lineWidth = 4; g.strokeRect(M, y - 10, 52 + pw, 60);
+    g.fillStyle = "#0b3fa8"; g.fillRect(M, y - 10, 52, 60); txt("LT", M + 26, y + 38, 800, 22, "#fff", "center");
+    txt(c.plate, M + 52 + pw / 2, y + 36, 800, 36, "#111", "center"); y += 80;
+  }
+  if (photo) {
+    var bx = W - M - 380, by = 190, bw = 380, bh = 250, k = Math.max(bw / photo.width, bh / photo.height);
+    g.save(); g.beginPath(); g.rect(bx, by, bw, bh); g.clip(); g.drawImage(photo, bx + (bw - photo.width * k) / 2, by + (bh - photo.height * k) / 2, photo.width * k, photo.height * k); g.restore();
+  }
+  y = Math.max(y + 30, photo ? 480 : 0);
+  var tot = 0; log.forEach(function(e){ if (e.c) tot += e.c; });
+  var facts = [[s.plate, c.plate], [s.vin, c.vin]];
+  if (o.reg) facts.push([s.reg, c.reg]);
+  facts.push([s.sbOdo, c.km ? nf(c.km) + " km" : ""], [s.sbInsp, c.insp ? fmt(c.insp) : ""], [s.sbEntries, String(log.length)]);
+  if (o.costs) facts.push([s.mTotal, eur(tot)]);
+  var cw = (W - 2 * M) / 2;
+  facts.forEach(function(f, i){ var x = M + (i % 2) * cw, yy = y + Math.floor(i / 2) * 104; txt(f[0], x, yy, 600, 24, "#5b6d75"); txt(f[1] || "—", x, yy + 40, 800, 33, "#0f1e24"); });
+  y += Math.ceil(facts.length / 2) * 104 + 30;
+  var cD = M, cT = M + 170, cK = M + 560, cN = M + 585, cC = W - M, nW = (o.costs ? cC - 160 : cC) - cN;
+  function head(){
+    g.fillStyle = "#eef3f4"; g.fillRect(M - 10, y - 34, W - 2 * M + 20, 56);
+    txt(s.mDate, cD, y, 800, 24, "#0b5d73"); txt(s.mType, cT, y, 800, 24, "#0b5d73"); txt(s.mKm, cK, y, 800, 24, "#0b5d73", "right"); txt(s.mNote, cN, y, 800, 24, "#0b5d73");
+    if (o.costs) txt(s.mCost, cC, y, 800, 24, "#0b5d73", "right");
+    y += 56;
+  }
+  if (!log.length) txt(s.sbEmpty, M, y + 10, 500, 28, "#5b6d75");
+  else {
+    head();
+    log.forEach(function(e){
+      font(700, 24); var tl = wrapTxt(g, s["k_" + e.k], 205); font(500, 26); var nl = wrapTxt(g, e.t || "", nW), n = Math.max(tl.length, nl.length, 1), rh = n * 34 + 26;
+      if (y + rh > H - 150) { newPage(); y = M + 40; head(); }
+      txt(fmt(e.d), cD, y + 4, 500, 26, "#0f1e24");
+      tl.forEach(function(l, i){ txt(l, cT, y + 4 + i * 34, 700, 24, "#0f1e24"); });
+      if (e.km) txt(nf(e.km) + " km", cK, y + 4, 500, 26, "#0f1e24", "right");
+      nl.forEach(function(l, i){ txt(l, cN, y + 4 + i * 34, 500, 26, "#33434b"); });
+      if (o.costs && e.c) txt(eur(e.c), cC, y + 4, 700, 26, "#0f1e24", "right");
+      y += rh; g.fillStyle = "#dce6e8"; g.fillRect(M, y - 14, W - 2 * M, 2);
+    });
+  }
+  var made = fmt(dayStr());
+  pages.forEach(function(p, i){
+    g = p.getContext("2d"); g.fillStyle = "#dce6e8"; g.fillRect(M, H - 118, W - 2 * M, 2);
+    txt("MankevCars, " + s.sbMade + " " + made, M, H - 70, 500, 22, "#5b6d75"); txt((i + 1) + " / " + pages.length, W - M, H - 70, 700, 22, "#5b6d75", "right"); txt(s.sbNote, M, H - 40, 500, 20, "#7a8a91");
+  });
+  var jp = await Promise.all(pages.map(function(p){ return new Promise(function(res, rej){ p.toBlob(function(b){ if (!b) rej(); else b.arrayBuffer().then(function(ab){ res(new Uint8Array(ab)); }); }, "image/jpeg", 0.9); }); }));
+  return {pdf: pdfFrom(jp, W, H), preview: new Blob([jp[0]], {type: "image/jpeg"}), pages: pages.length};
+}
+var bdlg = document.getElementById("bdlg"), sbOut = document.getElementById("sbOut"), sbGo = document.getElementById("sbGo"), bookBlob = null, bookName = "", bookUrl = null;
+function openBook(){ sbOut.innerHTML = ""; sbGo.disabled = false; bdlg.showModal(); }
+document.getElementById("sbClose").onclick = function(){ bdlg.close(); };
+bdlg.onclose = function(){ if (bookUrl) { URL.revokeObjectURL(bookUrl); bookUrl = null; } };
+function shareBook(){
+  var f = null; try { f = new File([bookBlob], bookName, {type: "application/pdf"}); } catch (e) {}
+  if (f && navigator.canShare && navigator.canShare({files: [f]})) navigator.share({files: [f], title: bookName}).catch(function(){});
+  else { var u = URL.createObjectURL(bookBlob), a = document.createElement("a"); a.href = u; a.download = bookName; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); }, 5000); }
+}
+sbGo.onclick = async function(){
+  var c = getCar(tab), s = T(); if (!c) return;
+  sbGo.disabled = true; sbOut.innerHTML = '<p class="lb">' + s.sbBusy + '</p>';
+  try {
+    var r = await renderBook(c, {costs: document.getElementById("sbCosts").checked, reg: document.getElementById("sbReg").checked, photo: document.getElementById("sbPhoto").checked});
+    bookBlob = r.pdf; bookName = ("mankevcars-" + (c.plate || short(c.name)) + "-" + dayStr()).replace(/[^A-Za-z0-9._-]+/g, "-") + ".pdf";
+    if (bookUrl) URL.revokeObjectURL(bookUrl);
+    bookUrl = URL.createObjectURL(r.preview);
+    sbOut.innerHTML = '<img class="sbp" alt="" src="' + bookUrl + '"><p class="lb">' + r.pages + ' ' + s.sbPages + '</p><div class="row" style="justify-content:flex-start"><button type="button" class="primary" id="sbShare">' + s.sbShare + '</button></div>';
+    document.getElementById("sbShare").onclick = shareBook;
+  } catch (e) { sbOut.innerHTML = '<p><b>' + s.sbErr + '</b></p>'; }
+  sbGo.disabled = false;
+};
+
 var odlg = document.getElementById("odlg"), odf = document.getElementById("odf");
 function openOdo(){
   var c = getCar(tab); if (!c) return;
   document.getElementById("odoInfo").textContent = T().odoInfo(c.km, c.oilKm != null ? c.oilKm + (c.int || 15000) : null);
   document.getElementById("odoErr").textContent = ""; odf.km.value = c.km || "";
-  odlg.showModal(); try { odf.km.select(); } catch (e) {}
+  odlg.showModal();
 }
 document.getElementById("ocancel").onclick = function(){ odlg.close(); };
 odf.onsubmit = function(e){
   e.preventDefault();
   var c = getCar(tab), v = Number(odf.km.value);
   if (c.km && v < c.km) { document.getElementById("odoErr").textContent = T().odoLow(nf(c.km)); return; }
-  c.km = v; save(); render(); odlg.close();
+  c.km = v; addOdo(c, dayStr(), v); save(); render(); odlg.close();
 };
 document.getElementById("home").onclick = function(){ page = "main"; tab = "all"; filt = "all"; render(); window.scrollTo({top: 0, behavior: "smooth"}); };
 ["ddlg", "sdlg"].forEach(function(id){ var d = document.getElementById(id); d.addEventListener("click", function(e){ var r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close(); }); });
@@ -984,6 +1161,7 @@ document.getElementById("view").onclick = function(e){
   var fs = e.target.closest("[data-fb]"); if (fs) { if (fs.dataset.fb === "again") { fb.sent = false; render(); } else fbSend(); return; }
   var sh = e.target.closest("[data-share]"); if (sh) { inviteShare(sh); return; }
   var cu = e.target.closest("[data-copyurl]"); if (cu) { copyText(APP_URL, cu); return; }
+  var sbb = e.target.closest("[data-sb]"); if (sbb) { openBook(); return; }
   var od = e.target.closest("[data-odo]"); if (od) { openOdo(); return; }
   var lg = e.target.closest("[data-log]"); if (lg) { openLog(lg.dataset.log); return; }
   var da = e.target.closest("[data-docadd]"); if (da) { dMsg = ""; df.click(); return; }
@@ -1023,7 +1201,8 @@ delBtn.onclick = function(){
 f.onsubmit = function(e){
   e.preventDefault();
   var num = function(v){ return v === "" ? null : Number(v); }, up = function(el){ return el.value.trim().toUpperCase(); }, old = getCar(cur) || {};
-  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo || (incoming && incoming.photo) || undefined, log: old.log || (incoming && incoming.log) || undefined};
+  var rec = {id: cur || Date.now(), name: f.name.value.trim(), plate: up(f.plate), vin: up(f.vin), reg: up(f.reg), insp: f.insp.value, ins: f.ins.value, oilKm: num(f.oilKm.value), km: num(f.km.value), int: num(f.int.value) || 15000, photo: old.photo || (incoming && incoming.photo) || undefined, log: old.log || (incoming && incoming.log) || undefined, odo: old.odo};
+  if (rec.km != null && rec.km !== old.km) addOdo(rec, dayStr(), rec.km);
   if (cur) cars = cars.map(function(x){ return x.id === cur ? rec : x; }); else if (cars.length < MAX) { cars.push(rec); tab = rec.id; incoming = null; }
   save(); render(); dlg.close();
 };
